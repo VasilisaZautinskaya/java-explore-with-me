@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.stats_dto.HitDto;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +17,10 @@ import java.util.Map;
 @Slf4j
 public class StatsClient extends BaseClient {
 
-    private static final String HIT_PREFIX = "/hit";
-    private static final String START_PREFIX = "/start";
+    public static final String DT_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern(DT_FORMAT);
+    public static final String HIT_ENDPOINT = "/hit";
+    public static final String STATS_ENDPOINT = "/stats";
 
     @Autowired
     public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -26,20 +30,42 @@ public class StatsClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getStats(
-            String start, String end,
-            List<String> uris, Boolean unique
-    ) {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("start", start);
-        parameters.put("end", end);
-        parameters.put("uris", String.join(",", uris));
-        parameters.put("unique", unique);
+    public ResponseEntity<Object> addHit(String appName, String uri, String ip, LocalDateTime timestamp) {
+        log.info("Отправка запроса на регистрацию обращения к appName = {}, uri = {}, ip = {}, timestamp = {}",
+                appName, uri, ip, timestamp);
 
-        return get(START_PREFIX + "?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
+       HitDto endpointHit = HitDto.builder()
+                .app(appName)
+                .uri(uri)
+                .ip(ip)
+                .timestamp(timestamp.format(DT_FORMATTER))
+                .build();
+        return post(HIT_ENDPOINT, endpointHit);
     }
 
-    public ResponseEntity<Object> addHit(HitDto hitDto) {
-        return post(HIT_PREFIX, hitDto);
+    public ResponseEntity<Object> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        log.info("Отправка запроса на получение статистики по параметрам start = {}, end = {}, uris = {}, unique = {}",
+                start, end, uris, unique);
+
+        if (start == null || end == null || start.isAfter(end)) {
+            throw new IllegalArgumentException("Недопустимый временной промежуток.");
+        }
+
+        StringBuilder uriBuilder = new StringBuilder(STATS_ENDPOINT + "?start={start}&end={end}");
+        Map<String, Object> parameters = Map.of(
+                "start", start.format(DT_FORMATTER),
+                "end", end.format(DT_FORMATTER)
+        );
+
+        if (uris != null && !uris.isEmpty()) {
+            for (String uri : uris) {
+                uriBuilder.append("&uris=").append(uri);
+            }
+        }
+        if (unique != null) {
+            uriBuilder.append("&unique=").append(unique);
+        }
+
+        return get(uriBuilder.toString(), parameters);
     }
 }

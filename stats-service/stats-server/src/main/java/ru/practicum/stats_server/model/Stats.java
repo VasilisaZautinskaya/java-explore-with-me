@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class Stats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    long id;
 
     @Column(name = "app_name")
     @NotNull

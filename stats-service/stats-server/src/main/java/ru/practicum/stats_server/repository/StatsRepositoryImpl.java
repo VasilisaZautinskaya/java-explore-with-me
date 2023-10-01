@@ -25,7 +25,7 @@ public class StatsRepositoryImpl implements StatsRepository {
 
     @Override
     public List<ViewStats> getAllStats() {
-        String sqlQuery = "SELECT count(*)" + "FROM stats" + "GROUP BY app_name";
+        String sqlQuery = "SELECT s.app, s.uri, COUNT(s.ip)" + "FROM stats AS s" + "GROUP BY s.app, s.uri";
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
     }
 
