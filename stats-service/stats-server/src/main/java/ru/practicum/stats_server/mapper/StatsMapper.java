@@ -24,7 +24,7 @@ public class StatsMapper {
     }
 
     public static Stats toStats(HitDto hitDto) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return Stats.builder()
                 .ip(hitDto.getIp())
                 .timestamp(LocalDateTime.parse(hitDto.getTimestamp(), formatter))

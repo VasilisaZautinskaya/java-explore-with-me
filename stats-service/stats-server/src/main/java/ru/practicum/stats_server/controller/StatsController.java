@@ -30,7 +30,7 @@ public class StatsController {
                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
                                        @RequestParam("end")
                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
-                                       @RequestParam(name = "uri", required = false, defaultValue = "")
+                                       @RequestParam(name = "uri", required = false)
                                        List<String> uri,
                                        @RequestParam(name = "unique", required = false, defaultValue = "false")
                                        Boolean unique) {
