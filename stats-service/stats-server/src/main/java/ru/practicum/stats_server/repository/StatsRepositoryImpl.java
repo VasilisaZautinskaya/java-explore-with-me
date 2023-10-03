@@ -25,17 +25,10 @@ public class StatsRepositoryImpl implements StatsRepository {
 
     @Override
     public List<ViewStats> getAllStats() {
-        String sqlQuery = "SELECT s.app, s.uri, COUNT(s.ip) FROM stats AS s GROUP BY s.app, s.uri";
+        String sqlQuery = "SELECT s.app, s.uri, COUNT(s.ip) " +
+                "FROM stats AS s " +
+                "GROUP BY s.app, s.uri ORDER BY COUNT(s.ip) DESC ";
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
-    }
-
-
-    private ViewStats mapRowToStats(ResultSet resultSet, int rowNum) throws SQLException {
-        return ViewStats.builder()
-                .uri(resultSet.getString("uri"))
-                .app(resultSet.getString("app"))
-                .build();
-
     }
 
 
@@ -45,23 +38,40 @@ public class StatsRepositoryImpl implements StatsRepository {
 
     }
 
-    @Override
-    public List<ViewStats> getAllStatsIp(LocalDateTime start, LocalDateTime end) {
-        String sqlQuery = "SELECT s.app, s.uri, COUNT(DISTINCT s.ip) FROM stats AS s GROUP BY s.app, s.uri ORDER BY COUNT(DISTINCT s.ip) DESC";
+    public List<ViewStats> getAllStatsDistinctIp(LocalDateTime start, LocalDateTime end) {
+        String sqlQuery = "SELECT s.app, s.uri, COUNT(DISTINCT s.ip)" +
+                " FROM stats AS s" +
+                " GROUP BY s.app, s.uri " +
+                "ORDER BY COUNT(DISTINCT s.ip) DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
     }
 
-    @Override
-    public List<ViewStats> getStatsByUrisIp(LocalDateTime start, LocalDateTime end, List<String> uris) {
-        String sqlQuery = "SELECT s.app, s.uri, COUNT(DISTINCT s.ip) FROM Stats AS s AND s.uri NOTNULL GROUP BY s.app, s.uri ORDER BY COUNT(DISTINCT s.ip) DESC ";
+    public List<ViewStats> getStatsByUrisDistinctIp(LocalDateTime start, LocalDateTime end, List<String> uris) {
+        String sqlQuery = "SELECT s.app, s.uri, COUNT(DISTINCT s.ip) " +
+                "FROM Stats AS s " +
+                "WHERE s.uri NOTNULL " +
+                "GROUP BY s.app, s.uri" +
+                "ORDER BY COUNT(DISTINCT s.ip) DESC ";
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
 
     }
 
     @Override
     public List<ViewStats> getStatsByUris(LocalDateTime start, LocalDateTime end, List<String> uris) {
-        String sqlQuery = "SELECT COUNT(*) FROM stats AS s WHERE s.uri IS NOT NULL";
+        String sqlQuery = "SELECT COUNT(*) " +
+                "FROM stats AS s " +
+                "WHERE s.uri IS NOT NULL" +
+                "GROUP BY s.app, s.uri " +
+                "ORDER BY COUNT(s.ip) DESC";
 
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
+    }
+
+    private ViewStats mapRowToStats(ResultSet resultSet, int rowNum) throws SQLException {
+        return ViewStats.builder()
+                .uri(resultSet.getString("uri"))
+                .app(resultSet.getString("app"))
+                .build();
+
     }
 }

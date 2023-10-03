@@ -32,7 +32,7 @@ public class StatsController {
                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
                                        @RequestParam(name = "uri", required = false)
                                        List<String> uri,
-                                       @RequestParam(name = "unique", required = false, defaultValue = "false")
+                                       @RequestParam(name = "unique", defaultValue = "false")
                                        Boolean unique) {
 
         return StatsMapper.toViewStatsDtoList(statsService.getStats(start, end, uri, unique));

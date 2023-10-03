@@ -30,15 +30,19 @@ public class StatsService {
         log.info("Вывод списка обращений по параметрам start = {}, end = {}, uris = {}, unique = {}",
                 start, end, uris, unique);
 
+        if (start.isAfter(end)) {
+            log.error("Недопустимый временной промежуток.");
+            throw new IllegalArgumentException("Недопустимый временной промежуток.");
+        }
         if (uris == null || uris.isEmpty()) {
             if (unique) {
-                return statsRepository.getAllStatsIp(start, end);
+                return statsRepository.getAllStatsDistinctIp(start, end);
             } else {
                 return statsRepository.getAllStats();
             }
         } else {
             if (unique) {
-                return statsRepository.getStatsByUrisIp(start, end, uris);
+                return statsRepository.getStatsByUrisDistinctIp(start, end, uris);
             } else {
                 return statsRepository.getStatsByUris(start, end, uris);
             }

@@ -12,9 +12,9 @@ public interface StatsRepository {
 
     List<ViewStats> getAllStats();
 
-    List<ViewStats> getAllStatsIp(LocalDateTime start, LocalDateTime end);
+    List<ViewStats> getAllStatsDistinctIp(LocalDateTime start, LocalDateTime end);
 
-    List<ViewStats> getStatsByUrisIp(LocalDateTime start, LocalDateTime end, List<String> uris);
+    List<ViewStats> getStatsByUrisDistinctIp(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     List<ViewStats> getStatsByUris(LocalDateTime start, LocalDateTime end, List<String> uris);
 }
