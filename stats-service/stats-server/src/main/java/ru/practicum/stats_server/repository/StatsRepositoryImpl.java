@@ -58,7 +58,11 @@ public class StatsRepositoryImpl implements StatsRepository {
 
     @Override
     public List<ViewStats> getStatsByUris(LocalDateTime start, LocalDateTime end, List<String> uris) {
-        String sqlQuery = "SELECT s.app, s.uri, COUNT(s.ip) FROM stats AS s WHERE s.uri = ? GROUP BY s.app, s.uri ORDER BY COUNT(s.ip) DESC";
+        String sqlQuery = "SELECT s.app, s.uri, COUNT(s.ip) " +
+                "FROM stats AS s " +
+                "WHERE s.uri = ? " +
+                "GROUP BY s.app, s.uri " +
+                "ORDER BY COUNT(s.ip) DESC";
 
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
     }
