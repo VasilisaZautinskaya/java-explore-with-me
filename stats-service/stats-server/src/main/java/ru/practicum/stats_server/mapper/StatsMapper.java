@@ -19,7 +19,7 @@ public class StatsMapper {
         return ViewStatsDto.builder()
                 .app(viewStats.getApp())
                 .uri(viewStats.getUri())
-                .hits(1L)
+                .hits(viewStats.getHits())
                 .build();
     }
 

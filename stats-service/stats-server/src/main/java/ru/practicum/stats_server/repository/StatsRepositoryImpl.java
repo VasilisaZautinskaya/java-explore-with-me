@@ -28,9 +28,9 @@ public class StatsRepositoryImpl implements StatsRepository {
         String sqlQuery = "SELECT s.app, s.uri, COUNT(s.ip)" +
                 "FROM stats AS s " +
                 "GROUP BY s.app, s.uri ORDER BY COUNT(s.ip) DESC ";
+
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
     }
-
 
     @Override
     public Stats save(Stats stats) {
@@ -50,9 +50,9 @@ public class StatsRepositoryImpl implements StatsRepository {
         String sqlQuery = "SELECT s.app, s.uri, COUNT(DISTINCT s.ip) " +
                 "FROM Stats AS s " +
                 "WHERE s.uri = ?" +
-                "GROUP BY s.app, s.uri" +
+                "GROUP BY s.app, s.uri " +
                 "ORDER BY COUNT(DISTINCT s.ip) DESC ";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
+        return jdbcTemplate.query(sqlQuery, this::mapRowToStats, uris.toArray());
 
     }
 
@@ -71,6 +71,7 @@ public class StatsRepositoryImpl implements StatsRepository {
         return ViewStats.builder()
                 .uri(resultSet.getString("uri"))
                 .app(resultSet.getString("app"))
+                .hits(resultSet.getLong("count"))
                 .build();
 
     }
