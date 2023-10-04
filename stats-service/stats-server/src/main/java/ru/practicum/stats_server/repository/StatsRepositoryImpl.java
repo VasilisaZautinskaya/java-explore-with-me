@@ -64,7 +64,7 @@ public class StatsRepositoryImpl implements StatsRepository {
                 "GROUP BY s.app, s.uri " +
                 "ORDER BY COUNT(s.ip) DESC";
 
-        return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
+        return jdbcTemplate.query(sqlQuery, this::mapRowToStats, uris.toArray());
     }
 
     private ViewStats mapRowToStats(ResultSet resultSet, int rowNum) throws SQLException {
