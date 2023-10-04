@@ -22,9 +22,7 @@ public class StatsService {
         return statsRepository.save(stats);
     }
 
-    public List<ViewStats> getAllStats() {
-        return statsRepository.getAllStats();
-    }
+
 
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         log.info("Вывод списка обращений по параметрам start = {}, end = {}, uris = {}, unique = {}",

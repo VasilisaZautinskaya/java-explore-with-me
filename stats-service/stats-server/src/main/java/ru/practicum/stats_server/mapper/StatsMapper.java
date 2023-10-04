@@ -1,6 +1,6 @@
 package ru.practicum.stats_server.mapper;
 
-import org.mapstruct.Mapper;
+import lombok.experimental.UtilityClass;
 import ru.practicum.stats_dto.HitDto;
 import ru.practicum.stats_dto.ViewStatsDto;
 import ru.practicum.stats_server.model.Stats;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Mapper(componentModel = "spring")
+@UtilityClass
 public class StatsMapper {
 
     public static ViewStatsDto toViewStatsDto(ViewStats viewStats) {

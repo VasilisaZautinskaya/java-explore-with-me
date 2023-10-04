@@ -25,7 +25,7 @@ public class StatsRepositoryImpl implements StatsRepository {
 
     @Override
     public List<ViewStats> getAllStats() {
-        String sqlQuery = "SELECT s.app, s.uri, COUNT(s.ip) " +
+        String sqlQuery = "SELECT s.app, s.uri, COUNT(s.ip)" +
                 "FROM stats AS s " +
                 "GROUP BY s.app, s.uri ORDER BY COUNT(s.ip) DESC ";
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
@@ -40,8 +40,8 @@ public class StatsRepositoryImpl implements StatsRepository {
 
     public List<ViewStats> getAllStatsDistinctIp(LocalDateTime start, LocalDateTime end) {
         String sqlQuery = "SELECT s.app, s.uri, COUNT(DISTINCT s.ip)" +
-                " FROM stats AS s" +
-                " GROUP BY s.app, s.uri " +
+                "FROM stats AS s " +
+                "GROUP BY s.app, s.uri " +
                 "ORDER BY COUNT(DISTINCT s.ip) DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
     }
@@ -49,7 +49,7 @@ public class StatsRepositoryImpl implements StatsRepository {
     public List<ViewStats> getStatsByUrisDistinctIp(LocalDateTime start, LocalDateTime end, List<String> uris) {
         String sqlQuery = "SELECT s.app, s.uri, COUNT(DISTINCT s.ip) " +
                 "FROM Stats AS s " +
-                "WHERE s.uri NOTNULL " +
+                "WHERE s.uri = ?" +
                 "GROUP BY s.app, s.uri" +
                 "ORDER BY COUNT(DISTINCT s.ip) DESC ";
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
@@ -58,11 +58,7 @@ public class StatsRepositoryImpl implements StatsRepository {
 
     @Override
     public List<ViewStats> getStatsByUris(LocalDateTime start, LocalDateTime end, List<String> uris) {
-        String sqlQuery = "SELECT COUNT(*) " +
-                "FROM stats AS s " +
-                "WHERE s.uri IS NOT NULL" +
-                "GROUP BY s.app, s.uri " +
-                "ORDER BY COUNT(s.ip) DESC";
+        String sqlQuery = "SELECT s.app, s.uri, COUNT(s.ip) FROM stats AS s WHERE s.uri = ? GROUP BY s.app, s.uri ORDER BY COUNT(s.ip) DESC";
 
         return jdbcTemplate.query(sqlQuery, this::mapRowToStats);
     }
