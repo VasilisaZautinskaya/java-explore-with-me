@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.category.CategoryService;
-import ru.practicum.category.dto.CategoryDto;
 import ru.ptacticum.main_service.category.dto.CategoryDto;
 import ru.ptacticum.main_service.category.mapper.CategoryMapper;
 import ru.ptacticum.main_service.category.model.Category;
@@ -31,11 +29,11 @@ public class CategoryAdminController {
 
     @PatchMapping("/{catId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public CategoryDto updateCategory(@Valid @RequestBody CategoryDto categoryDto,
+    public CategoryDto updateCategory(@Valid @RequestBody Category category,
                                       @PathVariable("catId") Long categoryId) {
 
-        log.info("Update Category {} ", categoryDto.getName());
-        return categoryService.updateCategory(categoryDto, categoryId);
+        log.info("Update Category {} ", category.getName());
+        return CategoryMapper.toCategoryDto(categoryService.updateCategory(category, categoryId));
     }
 
     @DeleteMapping("/{catId}")
