@@ -8,7 +8,7 @@ import ru.ptacticum.main_service.user.model.User;
 @UtilityClass
 public class UserMapper {
 
-    public UserDto returnUserDto(User user) {
+    public UserDto toUserDto(User user) {
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -17,7 +17,7 @@ public class UserMapper {
         return userDto;
     }
 
-    public UserShortDto returnUserShortDto(User user) {
+    public UserShortDto toUser(User user) {
         UserShortDto userShortDto = UserShortDto.builder()
                 .id(user.getId())
                 .name(user.getName())
