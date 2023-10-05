@@ -1,6 +1,6 @@
 package ru.ptacticum.main_service.utils;
 
-import ru.practicum.exception.ValidationException;
+import ru.ptacticum.main_service.exception.ValidationException;
 
 public enum Status {
 

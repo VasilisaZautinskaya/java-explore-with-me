@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @UtilityClass
-public class CollectionMapper {
+public class CompilationMapper {
 
     public CompilationDto toCompilationDto(Compilation compilation) {
 
