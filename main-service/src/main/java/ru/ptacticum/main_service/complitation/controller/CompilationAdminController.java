@@ -18,13 +18,14 @@ import javax.validation.Valid;
 public class CompilationAdminController {
 
     private final CompilationService compilationService;
+    private final CompilationMapper compilationMapper;
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public CompilationDto addCompilation(@Valid @RequestBody Compilation compilation) {
 
         log.info("Add Compilation {} ", compilation.getTitle());
-        return CompilationMapper.toCompilationDto(compilationService.addCompilation(compilation));
+        return compilationMapper.toCompilationDto(compilationService.addCompilation(compilation));
     }
 
     @DeleteMapping("/{compId}")
@@ -41,6 +42,6 @@ public class CompilationAdminController {
                                             @PathVariable Long compId) {
 
         log.info("Update Compilation {} ", compId);
-        return CompilationMapper.toCompilationDto(compilationService.updateCompilation(compId, compilation));
+        return compilationMapper.toCompilationDto(compilationService.updateCompilation(compId, compilation));
     }
 }

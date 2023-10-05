@@ -1,6 +1,9 @@
 package ru.ptacticum.main_service.event.mapper;
 
+import lombok.AllArgsConstructor;
 import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
+import ru.ptacticum.main_service.UnionService;
 import ru.ptacticum.main_service.category.mapper.CategoryMapper;
 import ru.ptacticum.main_service.category.model.Category;
 import ru.ptacticum.main_service.event.dto.EventFullDto;
@@ -8,6 +11,9 @@ import ru.ptacticum.main_service.event.dto.EventNewDto;
 import ru.ptacticum.main_service.event.dto.EventShortDto;
 import ru.ptacticum.main_service.event.model.Event;
 import ru.ptacticum.main_service.event.model.Location;
+import ru.ptacticum.main_service.event.repository.EventRepository;
+import ru.ptacticum.main_service.event.repository.LocationRepository;
+import ru.ptacticum.main_service.request.repository.RequestRepository;
 import ru.ptacticum.main_service.user.mapper.UserMapper;
 import ru.ptacticum.main_service.user.model.User;
 
@@ -18,9 +24,14 @@ import java.util.List;
 
 import static ru.ptacticum.main_service.utils.State.PENDING;
 
-
-@UtilityClass
+@Component
+@AllArgsConstructor
 public class EventMapper {
+
+    private UnionService unionService;
+    private EventRepository eventRepository;
+    private RequestRepository requestRepository;
+    private LocationRepository locationRepository;
 
     public Event toEvent(EventNewDto eventNewDto, Category category, Location location, User user) {
         Event event = Event.builder()
@@ -96,5 +107,13 @@ public class EventMapper {
             result.add(toEventShortDto(event));
         }
         return result;
+    }
+
+    public Event fromNewDto(EventNewDto eventNewDto, Long userId) {
+        User user = unionService.getUserOrNotFound(userId);
+        Category category = unionService.getCategoryOrNotFound(eventNewDto.getCategory());
+        Location location = locationRepository.save(LocationMapper.toLocation(eventNewDto.getLocation()));
+        Event event = toEvent(eventNewDto, category, location, user);
+        return event;
     }
 }

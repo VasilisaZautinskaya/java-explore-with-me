@@ -7,13 +7,11 @@ import org.springframework.stereotype.Service;
 import ru.ptacticum.main_service.UnionService;
 import ru.ptacticum.main_service.complitation.model.Compilation;
 import ru.ptacticum.main_service.complitation.repository.CompilationRepository;
-import ru.ptacticum.main_service.event.model.Event;
 import ru.ptacticum.main_service.event.repository.EventRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,26 +42,26 @@ public class CompilationService {
         compilationRepository.deleteById(compId);
     }
 
-    public Compilation updateCompilation(Long compId, Compilation compilation) {
+    public Compilation updateCompilation(Long compId, Compilation newCompilation) {
 
-        Compilation compilation1 = unionService.getCompilationOrNotFound(compId);
+        Compilation oldCompilation = unionService.getCompilationOrNotFound(compId);
 
-        if (compilation.getPinned() == null) {
-            compilation.setPinned(false);
+        if (oldCompilation.getPinned() == null) {
+            newCompilation.setPinned(false);
         }
 
-        if (compilation.getEvents() == null || compilation.getEvents().isEmpty()) {
-            compilation.setEvents(Collections.emptySet());
+        if (oldCompilation.getEvents() == null || oldCompilation.getEvents().isEmpty()) {
+            newCompilation.setEvents(Collections.emptySet());
         } else {
-            compilation.setEvents(eventRepository.findByIdIn(compilation.getEventsIds()));
+            newCompilation.setEvents(eventRepository.findByIdIn(oldCompilation.getEventsIds()));
         }
 
-        if (compilation.getTitle() != null) {
-            compilation.setTitle(compilation.getTitle());
+        if (oldCompilation.getTitle() != null) {
+            newCompilation.setTitle(oldCompilation.getTitle());
         }
 
-        compilation = compilationRepository.save(compilation);
-        return compilation;
+        newCompilation = compilationRepository.save(oldCompilation);
+        return newCompilation;
 
     }
 

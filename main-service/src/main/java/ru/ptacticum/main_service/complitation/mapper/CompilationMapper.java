@@ -1,6 +1,8 @@
 package ru.ptacticum.main_service.complitation.mapper;
 
+import lombok.AllArgsConstructor;
 import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 import ru.ptacticum.main_service.complitation.dto.CompilationDto;
 import ru.ptacticum.main_service.complitation.dto.CompilationNewDto;
 import ru.ptacticum.main_service.complitation.model.Compilation;
@@ -12,12 +14,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@UtilityClass
+@Component
+@AllArgsConstructor
 public class CompilationMapper {
+
+    private final EventMapper eventMapper;
 
     public CompilationDto toCompilationDto(Compilation compilation) {
 
-        List<EventShortDto> eventShortDtoList = EventMapper.toEventShortDtoList(compilation.getEvents());
+        List<EventShortDto> eventShortDtoList = eventMapper.toEventShortDtoList(compilation.getEvents());
 
         Set<EventShortDto> eventShortDtoSet = new HashSet<>();
         for (EventShortDto shortDto : eventShortDtoList) {

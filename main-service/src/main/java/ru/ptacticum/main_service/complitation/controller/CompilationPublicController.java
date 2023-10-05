@@ -20,6 +20,7 @@ import java.util.List;
 public class CompilationPublicController {
 
     private final CompilationService compilationService;
+    private final CompilationMapper compilationMapper;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -28,7 +29,7 @@ public class CompilationPublicController {
                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
         log.info("Get all compilations from pinned = {}, and from = {}, size = {}", pinned, from, size);
-        return CompilationMapper.toCompilationDtoList(compilationService.getCompilations(pinned, from, size));
+        return compilationMapper.toCompilationDtoList(compilationService.getCompilations(pinned, from, size));
     }
 
     @GetMapping("/{compId}")
@@ -36,6 +37,6 @@ public class CompilationPublicController {
     public CompilationDto getCompilationById(@PathVariable Long compId) {
 
         log.info("Get Compilation id {}", compId);
-        return CompilationMapper.toCompilationDto(compilationService.getCompilationById(compId));
+        return compilationMapper.toCompilationDto(compilationService.getCompilationById(compId));
     }
 }
