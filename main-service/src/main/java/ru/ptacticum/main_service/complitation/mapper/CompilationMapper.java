@@ -7,6 +7,7 @@ import ru.ptacticum.main_service.complitation.model.Compilation;
 import ru.ptacticum.main_service.event.dto.EventShortDto;
 import ru.ptacticum.main_service.event.mapper.EventMapper;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +41,15 @@ public class CompilationMapper {
     public Set<CompilationDto> toCompilationDtoSet(Iterable<Compilation> compilations) {
 
         Set<CompilationDto> result = new HashSet<>();
+        for (Compilation compilation : compilations) {
+            result.add(toCompilationDto(compilation));
+        }
+        return result;
+    }
+
+    public List<CompilationDto> toCompilationDtoList(Iterable<Compilation> compilations) {
+
+        List<CompilationDto> result = new ArrayList<>();
         for (Compilation compilation : compilations) {
             result.add(toCompilationDto(compilation));
         }

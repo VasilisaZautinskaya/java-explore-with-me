@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.compilation.CompilationService;
-import ru.practicum.compilation.dto.CompilationDto;
 import ru.ptacticum.main_service.complitation.dto.CompilationDto;
+import ru.ptacticum.main_service.complitation.mapper.CompilationMapper;
 import ru.ptacticum.main_service.complitation.service.CompilationService;
 
 import javax.validation.constraints.Positive;
@@ -28,8 +27,8 @@ public class CompilationPublicController {
                                                 @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
-        log.info("Get all compilations from pinned = {}, and from = {}, size = {}", pinned,  from, size);
-        return compilationService.getCompilations(pinned, from, size);
+        log.info("Get all compilations from pinned = {}, and from = {}, size = {}", pinned, from, size);
+        return CompilationMapper.toCompilationDtoList(compilationService.getCompilations(pinned, from, size));
     }
 
     @GetMapping("/{compId}")
@@ -37,6 +36,6 @@ public class CompilationPublicController {
     public CompilationDto getCompilationById(@PathVariable Long compId) {
 
         log.info("Get Compilation id {}", compId);
-        return compilationService.getCompilationById(compId);
+        return CompilationMapper.toCompilationDto(compilationService.getCompilationById(compId));
     }
 }

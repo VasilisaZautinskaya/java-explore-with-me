@@ -6,6 +6,7 @@ import ru.ptacticum.main_service.event.model.Event;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -33,4 +34,9 @@ public class Compilation {
             joinColumns = @JoinColumn(name = "compilation_id"),     //внешний ключ для объекта, для которого определяем сопоставление ассоциации.
             inverseJoinColumns = @JoinColumn(name = "event_id"))    //внешний ключ связанного объекта.
     Set<Event> events;
+
+    public Set<Long> getEventsIds() {
+        return events.stream().map(Event::getId).collect(Collectors.toSet());
+    }
 }
+

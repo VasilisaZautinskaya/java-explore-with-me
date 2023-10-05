@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 import ru.ptacticum.main_service.UnionService;
 import ru.ptacticum.main_service.complitation.model.Compilation;
 import ru.ptacticum.main_service.complitation.repository.CompilationRepository;
+import ru.ptacticum.main_service.event.model.Event;
 import ru.ptacticum.main_service.event.repository.EventRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,14 +25,13 @@ public class CompilationService {
 
     public Compilation addCompilation(Compilation compilation) {
 
-
         if (compilation.getPinned() == null) {
             compilation.setPinned(false);
         }
         if (compilation.getEvents() == null || compilation.getEvents().isEmpty()) {
             compilation.setEvents(Collections.emptySet());
         } else {
-            compilation.setEvents(eventRepository.findByIdIn(compilation.getEvents()));
+            compilation.setEvents(eventRepository.findByIdIn(compilation.getEventsIds()));
         }
 
         compilation = compilationRepository.save(compilation);
@@ -54,7 +55,7 @@ public class CompilationService {
         if (compilation.getEvents() == null || compilation.getEvents().isEmpty()) {
             compilation.setEvents(Collections.emptySet());
         } else {
-            compilation.setEvents(eventRepository.findByIdIn(compilation.getEvents()));
+            compilation.setEvents(eventRepository.findByIdIn(compilation.getEventsIds()));
         }
 
         if (compilation.getTitle() != null) {
