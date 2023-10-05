@@ -17,11 +17,13 @@ import ru.ptacticum.main_service.event.repository.EventRepository;
 import ru.ptacticum.main_service.event.repository.LocationRepository;
 import ru.ptacticum.main_service.exception.ConflictException;
 import ru.ptacticum.main_service.exception.NotFoundException;
+import ru.ptacticum.main_service.exception.ValidationException;
 import ru.ptacticum.main_service.request.dto.RequestDto;
 import ru.ptacticum.main_service.request.model.Request;
 import ru.ptacticum.main_service.request.repository.RequestRepository;
 import ru.ptacticum.main_service.user.model.User;
 import ru.ptacticum.main_service.utils.State;
+import ru.ptacticum.main_service.utils.StateAction;
 import ru.ptacticum.main_service.utils.Status;
 
 import java.time.LocalDateTime;
@@ -95,7 +97,7 @@ public class EventService {
         return requests;
     }
 
-    public RequestUpdateDtoResult updateStatusRequestsForEventIdByUserId(Request request, Long userId, Long eventId) {
+    public Request updateStatusRequestsForEventIdByUserId(Request request, Long userId, Long eventId) {
 
         User user = unionService.getUserOrNotFound(userId);
         Event event = unionService.getEventOrNotFound(eventId);
@@ -147,12 +149,12 @@ public class EventService {
         return result;
     }
 
-    public EventFullDto updateEventByAdmin(Event event, Long eventId) {
+    public Event updateEventByAdmin(Event event, Long eventId) {
 
         Event newEvent = unionService.getEventOrNotFound(eventId);
 
-        if (event.getStateAction() != null) {
-            if (eventUpdateDto.getStateAction().equals(StateAction.PUBLISH_EVENT)) {
+        if (event.getState() != null) {
+            if (event.getState().equals(StateAction.PUBLISH_EVENT)) {
 
                 if (!event.getState().equals(State.PENDING)) {
                     throw new ConflictException(String.format("Event - %s, has already been published, cannot be published again ", event.getTitle()));
@@ -169,12 +171,12 @@ public class EventService {
             }
         }
 
-        Event updateEvent = baseUpdateEvent(event, eventUpdateDto);
+        Event updateEvent = baseUpdateEvent(event, event);
 
-        return EventMapper.returnEventFullDto(updateEvent);
+        return updateEvent;
     }
 
-    public List<EventFullDto> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, Integer from, Integer size) {
+    public List<Event> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, Integer from, Integer size) {
 
         LocalDateTime startTime = unionService.parseDate(rangeStart);
         LocalDateTime endTime = unionService.parseDate(rangeEnd);
@@ -196,7 +198,7 @@ public class EventService {
         PageRequest pageRequest = PageRequest.of(from / size, size);
         List<Event> events = eventRepository.findEventsByAdminFromParam(users, statesValue, categories, startTime, endTime, pageRequest);
 
-        return EventMapper.returnEventFullDtoList(events);
+        return events;
     }
 
 
@@ -211,10 +213,10 @@ public class EventService {
         event.setViews(getViewsEventById(event.getId()));
         eventRepository.save(event);
 
-        return EventMapper.returnEventFullDto(event);
+        return event;
     }
 
-    public List<EventShortDto> getEventsByPublic(String text, List<Long> categories, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size, String uri, String ip) {
+    public List<Event> getEventsByPublic(String text, List<Long> categories, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size, String uri, String ip) {
 
         LocalDateTime startTime = unionService.parseDate(rangeStart);
         LocalDateTime endTime = unionService.parseDate(rangeEnd);
@@ -234,7 +236,7 @@ public class EventService {
             eventRepository.save(event);
         }
 
-        return EventMapper.returnEventShortDtoList(events);
+        return events;
     }
 
     private Event baseUpdateEvent(Event event, Event event) {
