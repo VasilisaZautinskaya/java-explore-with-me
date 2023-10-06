@@ -17,11 +17,10 @@ public class StatsService {
     private final StatsRepositoryImpl statsRepository;
 
 
-    public Stats addHit(Stats stats) {
+    public void addHit(Stats stats) {
         log.info("Регистрация обращения к {}", stats);
-        return statsRepository.save(stats);
+        statsRepository.save(stats);
     }
-
 
 
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {

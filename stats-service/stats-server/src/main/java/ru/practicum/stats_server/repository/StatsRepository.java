@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StatsRepository {
-    Stats save(Stats stats);
+    void save(Stats stats);
 
     List<ViewStats> getAllStats();
 
