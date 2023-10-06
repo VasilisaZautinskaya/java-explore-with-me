@@ -1,6 +1,5 @@
 package ru.practicum.stats_server.repository;
 
-
 import ru.practicum.stats_server.model.Stats;
 import ru.practicum.stats_server.model.ViewStats;
 

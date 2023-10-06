@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.event.EventService;
-import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.event.dto.EventShortDto;
+import ru.ptacticum.main_service.event.dto.EventFullDto;
+import ru.ptacticum.main_service.event.dto.EventShortDto;
+import ru.ptacticum.main_service.event.mapper.EventMapper;
 import ru.ptacticum.main_service.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +21,7 @@ import java.util.List;
 public class EventPublicController {
 
     public final EventService eventService;
+    private final EventMapper eventMapper;
 
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
@@ -40,7 +41,7 @@ public class EventPublicController {
 
         log.info("Get all events for public witch short info from parameters: text = {}, categories = {}, paid = {}, rangeStart = {}, rangeEnd = {}, onlyAvailable = {}, sort= {}, from = {}, size = {}",
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
-        return eventService.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, uri, ip);
+        return eventMapper.toEventShortDtoList(eventService.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, uri, ip));
     }
 
     @GetMapping("/{id}")
@@ -51,6 +52,6 @@ public class EventPublicController {
         String ip = request.getRemoteAddr();
 
         log.info("Get Event id {}", id);
-        return eventService.getEventById(id, uri, ip);
+        return eventMapper.toEventFullDto(eventService.getEventById(id, uri, ip));
     }
 }

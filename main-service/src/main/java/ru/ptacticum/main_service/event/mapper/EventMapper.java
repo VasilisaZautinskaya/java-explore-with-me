@@ -1,7 +1,6 @@
 package ru.ptacticum.main_service.event.mapper;
 
 import lombok.AllArgsConstructor;
-import lombok.experimental.UtilityClass;
 import org.springframework.stereotype.Component;
 import ru.ptacticum.main_service.UnionService;
 import ru.ptacticum.main_service.category.mapper.CategoryMapper;
@@ -29,8 +28,6 @@ import static ru.ptacticum.main_service.utils.State.PENDING;
 public class EventMapper {
 
     private UnionService unionService;
-    private EventRepository eventRepository;
-    private RequestRepository requestRepository;
     private LocationRepository locationRepository;
 
     public Event toEvent(EventNewDto eventNewDto, Category category, Location location, User user) {
