@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.stats_dto.HitDto;
 import ru.practicum.stats_dto.ViewStatsDto;
 import ru.practicum.stats_server.mapper.StatsMapper;
-import ru.practicum.stats_server.model.Stats;
 import ru.practicum.stats_server.service.StatsService;
 
 import javax.validation.Valid;
