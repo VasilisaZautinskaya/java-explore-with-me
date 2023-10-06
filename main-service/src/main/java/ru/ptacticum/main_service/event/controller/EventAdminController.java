@@ -34,7 +34,7 @@ public class EventAdminController {
                                                @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
         log.info("Get all events with parameters: users = {}, states = {}, categories = {}, rangeStart = {}, rangeEnd = {}, from = {}, size = {}", users, states, categories, rangeStart, rangeEnd, from, size);
-        return eventService.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventMapper.toEventFullDtoList(eventService.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size));
     }
 
     @PatchMapping("/{eventId}")

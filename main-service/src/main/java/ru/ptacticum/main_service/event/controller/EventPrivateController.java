@@ -9,6 +9,8 @@ import ru.ptacticum.main_service.event.mapper.EventMapper;
 import ru.ptacticum.main_service.event.model.Event;
 import ru.ptacticum.main_service.event.service.EventService;
 import ru.ptacticum.main_service.request.dto.RequestDto;
+import ru.ptacticum.main_service.request.dto.RequestUpdateDtoRequest;
+import ru.ptacticum.main_service.request.dto.RequestUpdateDtoResult;
 import ru.ptacticum.main_service.request.mapper.RequestMapper;
 import ru.ptacticum.main_service.request.model.Request;
 
@@ -80,9 +82,9 @@ public class EventPrivateController {
     @ResponseStatus(value = HttpStatus.OK)
     private RequestUpdateDtoResult updateStatusRequestsForEventIdByUserId(@PathVariable Long userId,
                                                                           @PathVariable Long eventId,
-                                                                          @RequestBody Request request) {
+                                                                          @RequestBody RequestUpdateDtoRequest requestDto) {
 
-        log.info("Update status request for event id{}, by user id{}.", eventId, userId);
-        return RequestMapper.toRequestDto(eventService.updateStatusRequestsForEventIdByUserId(request, userId, eventId));
+        log.info("Update status request for event id{}, by user id{}.", eventId,  userId);
+        return eventService.updateStatusRequestsForEventIdByUserId(requestDto, userId, eventId);
     }
 }

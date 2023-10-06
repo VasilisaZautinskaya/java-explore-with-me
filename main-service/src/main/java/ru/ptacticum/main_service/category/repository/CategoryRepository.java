@@ -6,6 +6,7 @@ import ru.ptacticum.main_service.category.model.Category;
 
 import java.util.List;
 
+
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     Category addCategory(Category category);

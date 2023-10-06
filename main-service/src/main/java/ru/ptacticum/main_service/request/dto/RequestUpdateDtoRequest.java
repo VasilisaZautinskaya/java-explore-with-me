@@ -1,4 +1,4 @@
-package ru.ptacticum.main_service.event.dto;
+package ru.ptacticum.main_service.request.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

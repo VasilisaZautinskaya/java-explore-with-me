@@ -8,17 +8,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats_dto.HitDto;
+import ru.practicum.stats_server.model.Stats;
 import ru.ptacticum.main_service.UnionService;
-import ru.ptacticum.main_service.event.dto.EventFullDto;
-import ru.ptacticum.main_service.event.dto.RequestUpdateDtoResult;
-import ru.ptacticum.main_service.event.mapper.LocationMapper;
 import ru.ptacticum.main_service.event.model.Event;
 import ru.ptacticum.main_service.event.repository.EventRepository;
 import ru.ptacticum.main_service.event.repository.LocationRepository;
 import ru.ptacticum.main_service.exception.ConflictException;
 import ru.ptacticum.main_service.exception.NotFoundException;
 import ru.ptacticum.main_service.exception.ValidationException;
-import ru.ptacticum.main_service.request.dto.RequestDto;
+import ru.ptacticum.main_service.request.dto.RequestUpdateDtoResult;
 import ru.ptacticum.main_service.request.model.Request;
 import ru.ptacticum.main_service.request.repository.RequestRepository;
 import ru.ptacticum.main_service.user.model.User;
@@ -41,6 +39,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final LocationRepository locationRepository;
+    private final StatsClient statsClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
@@ -78,7 +77,7 @@ public class EventService {
             throw new ConflictException(String.format("User %s cannot update event %s that has already been published.", userId, eventId));
         }
 
-        Event updateEvent = baseUpdateEvent(oldEvent, oldEvent);
+        Event updateEvent = baseUpdateEvent(oldEvent, newEvent);
 
         return updateEvent;
     }
@@ -92,9 +91,7 @@ public class EventService {
             throw new ConflictException(String.format("User %s is not the initiator of the event %s.", userId, eventId));
         }
 
-        List<Request> requests = requestRepository.findByEventId(eventId);
-
-        return requests;
+        return requestRepository.findByEventId(eventId);
     }
 
     public Request updateStatusRequestsForEventIdByUserId(Request request, Long userId, Long eventId) {
@@ -124,7 +121,7 @@ public class EventService {
 
         long vacantPlace = event.getParticipantLimit() - event.getConfirmedRequests();
 
-        List<Request> requestsList = requestRepository.findAllById(request.getRequestIds());
+        List<Request> requestsList = requestRepository.findAllById(request.getId());
 
         for (Request request : requestsList) {
             if (!request.getStatus().equals(Status.PENDING)) {
@@ -141,8 +138,6 @@ public class EventService {
                 rejectedRequests.add(request);
             }
         }
-
-
         eventRepository.save(event);
         requestRepository.saveAll(requestsList);
 
@@ -171,9 +166,7 @@ public class EventService {
             }
         }
 
-        Event updateEvent = baseUpdateEvent(event, event);
-
-        return updateEvent;
+        return baseUpdateEvent(event, event);
     }
 
     public List<Event> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, Integer from, Integer size) {
@@ -196,9 +189,8 @@ public class EventService {
         }
 
         PageRequest pageRequest = PageRequest.of(from / size, size);
-        List<Event> events = eventRepository.findEventsByAdminFromParam(users, statesValue, categories, startTime, endTime, pageRequest);
 
-        return events;
+        return eventRepository.findEventsByAdminFromParam(users, statesValue, categories, startTime, endTime, pageRequest);
     }
 
 
@@ -239,49 +231,49 @@ public class EventService {
         return events;
     }
 
-    private Event baseUpdateEvent(Event event, Event event) {
+    private Event baseUpdateEvent(Event oldEvent, Event newEvent) {
 
-        if (event.getAnnotation() != null && !event.getAnnotation().isBlank()) {
-            event.setAnnotation(event.getAnnotation());
+        if (newEvent.getAnnotation() != null && !newEvent.getAnnotation().isBlank()) {
+            oldEvent.setAnnotation(newEvent.getAnnotation());
         }
-        if (event.getCategory() != null) {
-            event.setCategory(unionService.getCategoryOrNotFound(event.getCategory()));
+        if (newEvent.getCategory() != null) {
+            oldEvent.setCategory(unionService.getCategoryOrNotFound(newEvent.getCategory().getId()));
         }
-        if (event.getDescription() != null && !event.getDescription().isBlank()) {
-            event.setDescription(event.getDescription());
+        if (newEvent.getDescription() != null && !oldEvent.getDescription().isBlank()) {
+            oldEvent.setDescription(oldEvent.getDescription());
         }
-        if (event.getEventDate() != null) {
-            event.setEventDate(event.getEventDate());
+        if (newEvent.getEventDate() != null) {
+            oldEvent.setEventDate(oldEvent.getEventDate());
         }
-        if (event.getLocation() != null) {
-            event.setLocation(LocationMapper.toLocation(event.getLocation()));
+        if (newEvent.getLocation() != null) {
+            oldEvent.setLocation(newEvent.getLocation());
         }
-        if (event.getPaid() != null) {
-            event.setPaid(event.getPaid());
+        if (newEvent.getPaid() != null) {
+            oldEvent.setPaid(oldEvent.getPaid());
         }
-        if (event.getParticipantLimit() != null) {
-            event.setParticipantLimit(event.getParticipantLimit());
+        if (newEvent.getParticipantLimit() != null) {
+            oldEvent.setParticipantLimit(oldEvent.getParticipantLimit());
         }
-        if (event.getRequestModeration() != null) {
-            event.setRequestModeration(event.getRequestModeration());
+        if (newEvent.getRequestModeration() != null) {
+            oldEvent.setRequestModeration(oldEvent.getRequestModeration());
         }
-        if (event.getStateAction() != null) {
-            if (event.getStateAction() == StateAction.PUBLISH_EVENT) {
-                event.setState(PUBLISHED);
-                event.setPublishedOn(LocalDateTime.now());
-            } else if (event.getStateAction() == StateAction.REJECT_EVENT ||
-                    event.getStateAction() == StateAction.CANCEL_REVIEW) {
-                event.setState(State.CANCELED);
-            } else if (event.getStateAction() == StateAction.SEND_TO_REVIEW) {
-                event.setState(State.PENDING);
+        if (newEvent.getState() != null) {
+            if (newEvent.getState() == StateAction.PUBLISH_EVENT) {
+                oldEvent.setState(PUBLISHED);
+                oldEvent.setPublishedOn(LocalDateTime.now());
+            } else if (newEvent.getState() == StateAction.REJECT_EVENT ||
+                    oldEvent.setState() == StateAction.CANCEL_REVIEW) {
+                oldEvent.setState(State.CANCELED);
+            } else if (newEvent.getState() == StateAction.SEND_TO_REVIEW) {
+                oldEvent.setState(State.PENDING);
             }
         }
-        if (event.getTitle() != null && !event.getTitle().isBlank()) {
-            event.setTitle(event.getTitle());
+        if (newEvent.getTitle() != null && !newEvent.getTitle().isBlank()) {
+            oldEvent.setTitle(oldEvent.getTitle());
         }
 
-        locationRepository.save(event.getLocation());
-        return eventRepository.save(event);
+        locationRepository.save(oldEvent.getLocation());
+        return eventRepository.save(oldEvent);
     }
 
     private void sendInfo(String uri, String ip) {
@@ -297,8 +289,8 @@ public class EventService {
     private Long getViewsEventById(Long eventId) {
 
         String uri = "/events/" + eventId;
-        ResponseEntity<Object> response = client.findStats(START_HISTORY, LocalDateTime.now(), uri, true);
-        List<StatsDto> result = objectMapper.convertValue(response.getBody(), new TypeReference<>() {
+        ResponseEntity<Object> response = statsClient.findStats(START_HISTORY, LocalDateTime.now(), uri, true);
+        List<Stats> result = objectMapper.convertValue(response.getBody(), new TypeReference<>() {
         });
 
         if (result.isEmpty()) {

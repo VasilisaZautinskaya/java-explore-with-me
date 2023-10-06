@@ -113,4 +113,5 @@ public class EventMapper {
         Event event = toEvent(eventNewDto, category, location, user);
         return event;
     }
+
 }
