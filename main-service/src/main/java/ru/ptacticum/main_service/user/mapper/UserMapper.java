@@ -1,8 +1,6 @@
 package ru.ptacticum.main_service.user.mapper;
 
 import lombok.experimental.UtilityClass;
-import ru.ptacticum.main_service.request.dto.RequestDto;
-import ru.ptacticum.main_service.request.model.Request;
 import ru.ptacticum.main_service.user.dto.UserDto;
 import ru.ptacticum.main_service.user.dto.UserShortDto;
 import ru.ptacticum.main_service.user.model.User;

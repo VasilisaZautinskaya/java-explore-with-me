@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats_dto.HitDto;
-import ru.practicum.stats_server.model.Stats;
+import ru.practicum.stats_server.model.ViewStats;
 import ru.ptacticum.main_service.UnionService;
 import ru.ptacticum.main_service.event.model.Event;
 import ru.ptacticum.main_service.event.repository.EventRepository;
@@ -16,7 +16,9 @@ import ru.ptacticum.main_service.event.repository.LocationRepository;
 import ru.ptacticum.main_service.exception.ConflictException;
 import ru.ptacticum.main_service.exception.NotFoundException;
 import ru.ptacticum.main_service.exception.ValidationException;
+import ru.ptacticum.main_service.request.dto.RequestUpdateDtoRequest;
 import ru.ptacticum.main_service.request.dto.RequestUpdateDtoResult;
+import ru.ptacticum.main_service.request.mapper.RequestMapper;
 import ru.ptacticum.main_service.request.model.Request;
 import ru.ptacticum.main_service.request.repository.RequestRepository;
 import ru.ptacticum.main_service.user.model.User;
@@ -41,6 +43,7 @@ public class EventService {
     private final LocationRepository locationRepository;
     private final StatsClient statsClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    public static final LocalDateTime START_HISTORY = LocalDateTime.of(1970, 1, 1, 0, 0);
 
 
     public Event addEvent(Event event) {
@@ -51,18 +54,16 @@ public class EventService {
 
         unionService.getUserOrNotFound(userId);
         PageRequest pageRequest = PageRequest.of(from / size, size);
-        List<Event> events = eventRepository.findByInitiatorId(userId, pageRequest);
 
-        return events;
+        return eventRepository.findByInitiatorId(userId, pageRequest);
     }
 
     public Event getUserEventById(Long userId, Long eventId) {
 
         unionService.getUserOrNotFound(userId);
         unionService.getEventOrNotFound(eventId);
-        Event event = eventRepository.findByInitiatorIdAndId(userId, eventId);
 
-        return event;
+        return eventRepository.findByInitiatorIdAndId(userId, eventId);
     }
 
     public Event updateEventByUserId(Event newEvent, Long userId, Long eventId) {
@@ -77,9 +78,7 @@ public class EventService {
             throw new ConflictException(String.format("User %s cannot update event %s that has already been published.", userId, eventId));
         }
 
-        Event updateEvent = baseUpdateEvent(oldEvent, newEvent);
-
-        return updateEvent;
+        return baseUpdateEvent(oldEvent, newEvent);
     }
 
     public List<Request> getRequestsForEventIdByUserId(Long userId, Long eventId) {
@@ -94,7 +93,7 @@ public class EventService {
         return requestRepository.findByEventId(eventId);
     }
 
-    public Request updateStatusRequestsForEventIdByUserId(Request request, Long userId, Long eventId) {
+    public RequestUpdateDtoResult updateStatusRequestsForEventIdByUserId(RequestUpdateDtoRequest requestDto, Long userId, Long eventId) {
 
         User user = unionService.getUserOrNotFound(userId);
         Event event = unionService.getEventOrNotFound(eventId);
@@ -121,14 +120,14 @@ public class EventService {
 
         long vacantPlace = event.getParticipantLimit() - event.getConfirmedRequests();
 
-        List<Request> requestsList = requestRepository.findAllById(request.getId());
+        List<Request> requestsList = requestRepository.findAllById(requestDto.getRequestIds());
 
         for (Request request : requestsList) {
             if (!request.getStatus().equals(Status.PENDING)) {
                 throw new ConflictException("Request must have status PENDING");
-            }
+            }   -
 
-            if (request.getStatus().equals(Status.CONFIRMED) && vacantPlace > 0) {
+            if (requestDto.getStatus().equals(Status.CONFIRMED) && vacantPlace > 0) {
                 request.setStatus(Status.CONFIRMED);
                 event.setConfirmedRequests(requestRepository.countAllByEventIdAndStatus(eventId, Status.CONFIRMED));
                 confirmedRequests.add(request);
@@ -138,11 +137,15 @@ public class EventService {
                 rejectedRequests.add(request);
             }
         }
+        result.setConfirmedRequests(RequestMapper.toRequestDtoList(confirmedRequests));
+        result.setRejectedRequests(RequestMapper.toRequestDtoList(rejectedRequests));
+
         eventRepository.save(event);
         requestRepository.saveAll(requestsList);
 
         return result;
     }
+
 
     public Event updateEventByAdmin(Event event, Long eventId) {
 
@@ -169,7 +172,9 @@ public class EventService {
         return baseUpdateEvent(event, event);
     }
 
-    public List<Event> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, Integer from, Integer size) {
+    public List<Event> getEventsByAdmin
+            (List<Long> users, List<String> states, List<Long> categories, String rangeStart, String
+                    rangeEnd, Integer from, Integer size) {
 
         LocalDateTime startTime = unionService.parseDate(rangeStart);
         LocalDateTime endTime = unionService.parseDate(rangeEnd);
@@ -208,7 +213,10 @@ public class EventService {
         return event;
     }
 
-    public List<Event> getEventsByPublic(String text, List<Long> categories, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size, String uri, String ip) {
+    public List<Event> getEventsByPublic(String text, List<Long> categories, Boolean paid, String
+            rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size, String
+                                                 uri, String
+                                                 ip) {
 
         LocalDateTime startTime = unionService.parseDate(rangeStart);
         LocalDateTime endTime = unionService.parseDate(rangeEnd);
@@ -258,13 +266,12 @@ public class EventService {
             oldEvent.setRequestModeration(oldEvent.getRequestModeration());
         }
         if (newEvent.getState() != null) {
-            if (newEvent.getState() == StateAction.PUBLISH_EVENT) {
+            if (newEvent.getState() == PUBLISHED) {
                 oldEvent.setState(PUBLISHED);
                 oldEvent.setPublishedOn(LocalDateTime.now());
-            } else if (newEvent.getState() == StateAction.REJECT_EVENT ||
-                    oldEvent.setState() == StateAction.CANCEL_REVIEW) {
+            } else if (newEvent.getState() == State.CANCELED) {
                 oldEvent.setState(State.CANCELED);
-            } else if (newEvent.getState() == StateAction.SEND_TO_REVIEW) {
+            } else if (newEvent.getState() == State.PENDING) {
                 oldEvent.setState(State.PENDING);
             }
         }
@@ -281,7 +288,7 @@ public class EventService {
                 .app("ewm-service")
                 .uri(uri)
                 .ip(ip)
-                .timestamp(LocalDateTime.now())
+                .timestamp(LocalDateTime.now().toString())
                 .build();
         client.addHit(hitDto);
     }
@@ -289,8 +296,8 @@ public class EventService {
     private Long getViewsEventById(Long eventId) {
 
         String uri = "/events/" + eventId;
-        ResponseEntity<Object> response = statsClient.findStats(START_HISTORY, LocalDateTime.now(), uri, true);
-        List<Stats> result = objectMapper.convertValue(response.getBody(), new TypeReference<>() {
+        ResponseEntity<Object> response = statsClient.getStats(START_HISTORY, LocalDateTime.now(), uri, true);
+        List<ViewStats> result = objectMapper.convertValue(response.getBody(), new TypeReference<>() {
         });
 
         if (result.isEmpty()) {
