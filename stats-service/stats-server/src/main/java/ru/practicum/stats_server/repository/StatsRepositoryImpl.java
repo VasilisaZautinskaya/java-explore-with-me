@@ -1,6 +1,5 @@
 package ru.practicum.stats_server.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,8 +15,7 @@ import java.util.Map;
 @Repository
 @Primary
 public class StatsRepositoryImpl implements StatsRepository {
-    @Autowired
-    JpaStatsRepository jpaStatsRepository;
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public StatsRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -34,8 +32,15 @@ public class StatsRepositoryImpl implements StatsRepository {
     }
 
     @Override
-    public Stats save(Stats stats) {
-        return jpaStatsRepository.save(stats);
+    public void save(Stats stats) {
+        String sqlQuery = "INSERT INTO stats(app, ip, timestamp, uri)" +
+                "VALUES(:app, :ip, :timestamp, :uri)";
+        jdbcTemplate.update(sqlQuery, Map.of(
+                "app", stats.getApp(),
+                "ip", stats.getIp(),
+                "timestamp", stats.getTimestamp(),
+                "uri", stats.getUri())
+        );
 
     }
 
