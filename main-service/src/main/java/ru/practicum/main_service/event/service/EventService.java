@@ -169,9 +169,8 @@ public class EventService {
         return baseUpdateEvent(oldEvent, event, stateAction);
     }
 
-    public List<Event> getEventsByAdmin
-            (List<Long> users, List<String> states, List<Long> categories, String rangeStart, String
-                    rangeEnd, Integer from, Integer size) {
+    public List<Event> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String
+            rangeEnd, Integer from, Integer size) {
 
         LocalDateTime startTime = unionService.parseDate(rangeStart);
         LocalDateTime endTime = unionService.parseDate(rangeEnd);
