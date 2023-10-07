@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.main_service.complitation.dto.CompilationDto;
 import ru.practicum.main_service.complitation.dto.CompilationNewDto;
+import ru.practicum.main_service.complitation.dto.CompilationUpdateDto;
 import ru.practicum.main_service.complitation.model.Compilation;
 import ru.practicum.main_service.event.dto.EventShortDto;
 import ru.practicum.main_service.event.mapper.EventMapper;
@@ -36,6 +37,7 @@ public class CompilationMapper {
     }
 
     public Compilation toCompilation(CompilationNewDto compilationNewDto) {
+
         return Compilation.builder()
                 .title(compilationNewDto.getTitle())
                 .pinned(compilationNewDto.getPinned())
@@ -58,5 +60,13 @@ public class CompilationMapper {
             result.add(toCompilationDto(compilation));
         }
         return result;
+    }
+
+    public Compilation toCompilaytionUpdate(CompilationUpdateDto compilationUpdateDto) {
+        return Compilation.builder()
+                .title(compilationUpdateDto.getTitle())
+                .pinned(compilationUpdateDto.getPinned())
+                .build();
+
     }
 }

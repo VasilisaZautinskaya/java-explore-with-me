@@ -144,14 +144,13 @@ public class EventService {
         return requestsList;
     }
 
-    @Transactional
 
-    public Event updateEventByAdmin(Event event, Long eventId) {
+    public Event updateEventByAdmin(StateAction stateAction, Long eventId, Event event) {
 
         Event oldEvent = unionService.getEventOrNotFound(eventId);
 
-        if (oldEvent.getState() != null) {
-            if (oldEvent.getState().equals(StateAction.PUBLISH_EVENT)) {
+        if (stateAction != null) {
+            if (stateAction.equals(StateAction.PUBLISH_EVENT)) {
 
                 if (!oldEvent.getState().equals(State.PENDING)) {
                     throw new ConflictException(String.format("Event - %s, has already been published, cannot be published again ", event.getTitle()));
@@ -161,7 +160,7 @@ public class EventService {
 
             } else {
 
-                if (!oldEvent.getState().equals(State.PENDING)) {
+                if (!stateAction.equals(State.PENDING)) {
                     throw new ConflictException(String.format("Event - %s, cannot be canceled because its statute is not \"PENDING\"", event.getTitle()));
                 }
                 event.setState(State.CANCELED);
@@ -246,22 +245,22 @@ public class EventService {
             oldEvent.setCategory(unionService.getCategoryOrNotFound(newEvent.getCategory().getId()));
         }
         if (newEvent.getDescription() != null && !oldEvent.getDescription().isBlank()) {
-            oldEvent.setDescription(oldEvent.getDescription());
+            oldEvent.setDescription(newEvent.getDescription());
         }
         if (newEvent.getEventDate() != null) {
-            oldEvent.setEventDate(oldEvent.getEventDate());
+            oldEvent.setEventDate(newEvent.getEventDate());
         }
         if (newEvent.getLocation() != null) {
             oldEvent.setLocation(newEvent.getLocation());
         }
         if (newEvent.getPaid() != null) {
-            oldEvent.setPaid(oldEvent.getPaid());
+            oldEvent.setPaid(newEvent.getPaid());
         }
         if (newEvent.getParticipantLimit() != null) {
-            oldEvent.setParticipantLimit(oldEvent.getParticipantLimit());
+            oldEvent.setParticipantLimit(newEvent.getParticipantLimit());
         }
         if (newEvent.getRequestModeration() != null) {
-            oldEvent.setRequestModeration(oldEvent.getRequestModeration());
+            oldEvent.setRequestModeration(newEvent.getRequestModeration());
         }
         if (newEvent.getState() != null) {
             if (newEvent.getState() == State.PUBLISHED) {
@@ -274,7 +273,10 @@ public class EventService {
             }
         }
         if (newEvent.getTitle() != null && !newEvent.getTitle().isBlank()) {
-            oldEvent.setTitle(oldEvent.getTitle());
+            oldEvent.setTitle(newEvent.getTitle());
+        }
+        if (newEvent.getDescription() != null && !newEvent.getDescription().isBlank()) {
+            oldEvent.setDescription(newEvent.getDescription());
         }
 
         locationRepository.save(oldEvent.getLocation());

@@ -16,25 +16,23 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class RequestMapper {
     public RequestDto toRequestDto(Request request) {
-        RequestDto requestDto = RequestDto.builder()
+      return RequestDto.builder()
                 .id(request.getId())
                 .created(request.getCreated())
                 .event(request.getEvent().getId())
                 .requester(request.getRequester().getId())
                 .status(request.getStatus())
                 .build();
-        return requestDto;
     }
 
     public Request toRequest(RequestDto requestDto, Event event, User user) {
-        Request request = Request.builder()
+        return Request.builder()
                 .id(requestDto.getId())
                 .created(LocalDateTime.now())
                 .event(event)
                 .requester(user)
                 .status(Status.PENDING)
                 .build();
-        return request;
     }
 
     public List<RequestDto> toRequestDtoList(Iterable<Request> requests) {

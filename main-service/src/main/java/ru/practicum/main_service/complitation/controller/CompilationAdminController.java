@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main_service.complitation.dto.CompilationDto;
+import ru.practicum.main_service.complitation.dto.CompilationNewDto;
+import ru.practicum.main_service.complitation.dto.CompilationUpdateDto;
 import ru.practicum.main_service.complitation.mapper.CompilationMapper;
 import ru.practicum.main_service.complitation.model.Compilation;
 import ru.practicum.main_service.complitation.service.CompilationService;
@@ -22,9 +24,10 @@ public class CompilationAdminController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CompilationDto addCompilation(@Valid @RequestBody Compilation compilation) {
+    public CompilationDto addCompilation(@Valid @RequestBody CompilationNewDto compilationNewDto) {
 
-        log.info("Add Compilation {} ", compilation.getTitle());
+        log.info("Добавление подборки событий {} ", compilationNewDto.getTitle());
+        Compilation compilation = compilationMapper.toCompilation(compilationNewDto);
         return compilationMapper.toCompilationDto(compilationService.addCompilation(compilation));
     }
 
@@ -38,10 +41,11 @@ public class CompilationAdminController {
 
     @PatchMapping("/{compId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public CompilationDto updateCompilation(@Valid @RequestBody Compilation compilation,
+    public CompilationDto updateCompilation(@Valid @RequestBody CompilationUpdateDto compilationUpdateDto,
                                             @PathVariable Long compId) {
 
         log.info("Update Compilation {} ", compId);
+        Compilation compilation = compilationMapper.toCompilaytionUpdate(compilationUpdateDto);
         return compilationMapper.toCompilationDto(compilationService.updateCompilation(compId, compilation));
     }
 }

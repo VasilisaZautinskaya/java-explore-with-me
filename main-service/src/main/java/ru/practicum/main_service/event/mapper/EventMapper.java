@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.main_service.UnionService;
 import ru.practicum.main_service.category.mapper.CategoryMapper;
 import ru.practicum.main_service.category.model.Category;
+import ru.practicum.main_service.event.dto.EventUpdateDto;
 import ru.practicum.main_service.event.repository.LocationRepository;
 import ru.practicum.main_service.utils.State;
 import ru.practicum.main_service.event.dto.EventFullDto;
@@ -28,7 +29,7 @@ public class EventMapper {
     private LocationRepository locationRepository;
 
     public Event toEvent(EventNewDto eventNewDto, Category category, Location location, User user) {
-        Event event = Event.builder()
+        return Event.builder()
                 .annotation(eventNewDto.getAnnotation())
                 .category(category)
                 .description(eventNewDto.getDescription())
@@ -44,11 +45,10 @@ public class EventMapper {
                 .confirmedRequests(0L)
                 .title(eventNewDto.getTitle())
                 .build();
-        return event;
     }
 
     public EventFullDto toEventFullDto(Event event) {
-        EventFullDto eventFullDto = EventFullDto.builder()
+        return EventFullDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(event.getCategory()))
                 .confirmedRequests(event.getConfirmedRequests())
@@ -66,12 +66,11 @@ public class EventMapper {
                 .title(event.getTitle())
                 .views(event.getViews())
                 .build();
-        return eventFullDto;
     }
 
     public EventShortDto toEventShortDto(Event event) {
 
-        EventShortDto eventShortDto = EventShortDto.builder()
+        return EventShortDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(event.getCategory()))
                 .confirmedRequests(event.getConfirmedRequests())
@@ -82,7 +81,6 @@ public class EventMapper {
                 .title(event.getTitle())
                 .views(event.getViews())
                 .build();
-        return eventShortDto;
     }
 
     public List<EventFullDto> toEventFullDtoList(Iterable<Event> events) {
@@ -111,5 +109,25 @@ public class EventMapper {
         return event;
     }
 
+    public Event toEventUpdate(EventUpdateDto eventUpdateDto, Long eventId) {
+        Category category = eventUpdateDto.getCategory() != null
+                ? unionService.getCategoryOrNotFound(eventUpdateDto.getCategory())
+                : null;
+        Location location = eventUpdateDto.getLocation() != null
+                ? locationRepository.save(LocationMapper.toLocation(eventUpdateDto.getLocation()))
+                : null;
+        return Event.builder()
+                .id(eventId)
+                .annotation(eventUpdateDto.getAnnotation())
+                .category(category)
+                .description(eventUpdateDto.getDescription())
+                .eventDate(eventUpdateDto.getEventDate())
+                .location(location)
+                .paid(eventUpdateDto.getPaid())
+                .participantLimit(eventUpdateDto.getParticipantLimit())
+                .requestModeration(eventUpdateDto.getRequestModeration())
+                .title(eventUpdateDto.getTitle())
+                .build();
+    }
 
 }

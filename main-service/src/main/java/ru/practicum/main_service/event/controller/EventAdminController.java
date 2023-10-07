@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main_service.event.dto.EventFullDto;
+import ru.practicum.main_service.event.dto.EventUpdateDto;
 import ru.practicum.main_service.event.mapper.EventMapper;
 import ru.practicum.main_service.event.model.Event;
 import ru.practicum.main_service.event.service.EventService;
@@ -39,10 +40,16 @@ public class EventAdminController {
 
     @PatchMapping("/{eventId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public EventFullDto updateEventByAdmin(@Valid @RequestBody Event event,
-                                           @PathVariable Long eventId) {
+    public EventFullDto updateEventByAdmin(
+            @Valid @RequestBody EventUpdateDto eventUpdateDto,
+            @PathVariable Long eventId
+    ) {
 
         log.info("Администратор обновил событие {} ", eventId);
-        return eventMapper.toEventFullDto(eventService.updateEventByAdmin(event, eventId));
+        return eventMapper.toEventFullDto(
+                eventService.updateEventByAdmin(eventUpdateDto.getStateAction(),
+                        eventId,
+                        eventMapper.toEventUpdate(eventUpdateDto, eventId)
+                ));
     }
 }

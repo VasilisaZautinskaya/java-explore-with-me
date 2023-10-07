@@ -12,20 +12,20 @@ import java.util.List;
 public class UserMapper {
 
     public UserDto toUserDto(User user) {
-        UserDto userDto = UserDto.builder()
+        return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .build();
-        return userDto;
+
     }
 
     public UserShortDto toUserShortDto(User user) {
-        UserShortDto userShortDto = UserShortDto.builder()
+       return UserShortDto.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .build();
-        return userShortDto;
+
     }
 
     public List<UserDto> toUserDtoList(Iterable<User> users) {
