@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats_dto.HitDto;
 import ru.practicum.stats_server.model.ViewStats;
+import ru.ptacticum.main_service.StaticsClient;
 import ru.ptacticum.main_service.UnionService;
 import ru.ptacticum.main_service.event.model.Event;
 import ru.ptacticum.main_service.event.repository.EventRepository;
@@ -16,8 +17,6 @@ import ru.ptacticum.main_service.event.repository.LocationRepository;
 import ru.ptacticum.main_service.exception.ConflictException;
 import ru.ptacticum.main_service.exception.NotFoundException;
 import ru.ptacticum.main_service.exception.ValidationException;
-import ru.ptacticum.main_service.request.dto.RequestUpdateDtoResult;
-import ru.ptacticum.main_service.request.mapper.RequestMapper;
 import ru.ptacticum.main_service.request.model.Request;
 import ru.ptacticum.main_service.request.repository.RequestRepository;
 import ru.ptacticum.main_service.user.model.User;
@@ -40,7 +39,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final LocationRepository locationRepository;
-    private final StatsClient statsClient;
+    private final StaticsClient statsClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
     public static final LocalDateTime START_HISTORY = LocalDateTime.of(1970, 1, 1, 0, 0);
 
