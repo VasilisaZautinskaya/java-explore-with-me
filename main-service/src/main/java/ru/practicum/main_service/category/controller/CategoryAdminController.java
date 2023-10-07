@@ -23,7 +23,7 @@ public class CategoryAdminController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public CategoryDto addCategory(@Valid @RequestBody Category category) {
 
-        log.info("Add Category {} ", category.getName());
+        log.info("Добавление категории {} ", category.getName());
         return CategoryMapper.toCategoryDto(categoryService.addCategory(category));
     }
 
@@ -32,7 +32,7 @@ public class CategoryAdminController {
     public CategoryDto updateCategory(@Valid @RequestBody Category category,
                                       @PathVariable("catId") Long categoryId) {
 
-        log.info("Update Category {} ", category.getName());
+        log.info("Обновление категории {} ", category.getName());
         return CategoryMapper.toCategoryDto(categoryService.updateCategory(category, categoryId));
     }
 
@@ -40,7 +40,7 @@ public class CategoryAdminController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable("catId") Long categoryId) {
 
-        log.info("Delete Category {} ", categoryId);
+        log.info("Удаление категории {} ", categoryId);
         categoryService.deleteCategory(categoryId);
     }
 }

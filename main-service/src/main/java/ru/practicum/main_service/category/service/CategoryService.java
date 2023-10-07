@@ -39,7 +39,7 @@ public class CategoryService {
         unionService.getCategoryOrNotFound(categoryId);
 
         if (!eventRepository.findByCategoryId(categoryId).isEmpty()) {
-            throw new ConflictException(String.format("This category id %s is used and cannot be deleted", categoryId));
+            throw new ConflictException(String.format("Этот идентификатор категории %s используется, поэтому не удалось удалить категорию   ", categoryId));
         }
 
         categoryRepository.deleteById(categoryId);

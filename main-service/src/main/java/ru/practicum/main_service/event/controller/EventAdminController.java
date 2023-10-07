@@ -33,7 +33,7 @@ public class EventAdminController {
                                                @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
-        log.info("Get all events with parameters: users = {}, states = {}, categories = {}, rangeStart = {}, rangeEnd = {}, from = {}, size = {}", users, states, categories, rangeStart, rangeEnd, from, size);
+        log.info("Получение списка всех событий по параметрам: users = {}, states = {}, categories = {}, rangeStart = {}, rangeEnd = {}, from = {}, size = {}", users, states, categories, rangeStart, rangeEnd, from, size);
         return eventMapper.toEventFullDtoList(eventService.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size));
     }
 
@@ -42,7 +42,7 @@ public class EventAdminController {
     public EventFullDto updateEventByAdmin(@Valid @RequestBody Event event,
                                            @PathVariable Long eventId) {
 
-        log.info("Admin update Event {} ", eventId);
+        log.info("Администратор обновил событие {} ", eventId);
         return eventMapper.toEventFullDto(eventService.updateEventByAdmin(event, eventId));
     }
 }
