@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.ptacticum.main_service.UnionService;
 import ru.ptacticum.main_service.event.dto.*;
 import ru.ptacticum.main_service.event.mapper.EventMapper;
 import ru.ptacticum.main_service.event.model.Event;
@@ -13,6 +14,7 @@ import ru.ptacticum.main_service.request.dto.RequestUpdateDtoRequest;
 import ru.ptacticum.main_service.request.dto.RequestUpdateDtoResult;
 import ru.ptacticum.main_service.request.mapper.RequestMapper;
 import ru.ptacticum.main_service.request.model.Request;
+import ru.ptacticum.main_service.utils.Status;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -27,6 +29,8 @@ public class EventPrivateController {
 
     private final EventService eventService;
     private final EventMapper eventMapper;
+
+    private final UnionService unionService;
 
 
     @PostMapping
@@ -83,8 +87,9 @@ public class EventPrivateController {
     private RequestUpdateDtoResult updateStatusRequestsForEventIdByUserId(@PathVariable Long userId,
                                                                           @PathVariable Long eventId,
                                                                           @RequestBody RequestUpdateDtoRequest requestDto) {
-
-        log.info("Update status request for event id{}, by user id{}.", eventId,  userId);
-        return eventService.updateStatusRequestsForEventIdByUserId(requestDto, userId, eventId);
+        log.info("Update status request for event id{}, by user id{}.", eventId, userId);
+        List<Request> requests = eventService.getRequestsById(requestDto.getRequestIds());
+        Status status = requestDto.getStatus();
+        return RequestMapper.toRequestUpdateDto(eventService.updateStatusRequestsForEventIdByUserId(requests, userId, eventId, status));
     }
 }

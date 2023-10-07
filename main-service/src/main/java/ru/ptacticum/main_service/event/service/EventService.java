@@ -16,7 +16,6 @@ import ru.ptacticum.main_service.event.repository.LocationRepository;
 import ru.ptacticum.main_service.exception.ConflictException;
 import ru.ptacticum.main_service.exception.NotFoundException;
 import ru.ptacticum.main_service.exception.ValidationException;
-import ru.ptacticum.main_service.request.dto.RequestUpdateDtoRequest;
 import ru.ptacticum.main_service.request.dto.RequestUpdateDtoResult;
 import ru.ptacticum.main_service.request.mapper.RequestMapper;
 import ru.ptacticum.main_service.request.model.Request;
@@ -90,71 +89,68 @@ public class EventService {
             throw new ConflictException(String.format("User %s is not the initiator of the event %s.", userId, eventId));
         }
 
-        return requestRepository.findByEventId(eventId);
+        return requestRepository.getByEventId(eventId);
     }
 
-    public RequestUpdateDtoResult updateStatusRequestsForEventIdByUserId(RequestUpdateDtoRequest requestDto, Long userId, Long eventId) {
+    public List<Request> getRequestsById(List<Long> requestIds) {
+        List<Request> requests = requestRepository.findAllById(requestIds);
+        return requests;
+    }
+
+    public List<Request> updateStatusRequestsForEventIdByUserId(
+            List<Request> requests,
+            Long userId,
+            Long eventId,
+            Status status
+    ) {
 
         User user = unionService.getUserOrNotFound(userId);
         Event event = unionService.getEventOrNotFound(eventId);
-
-        RequestUpdateDtoResult result = RequestUpdateDtoResult.builder()
-                .confirmedRequests(Collections.emptyList())
-                .rejectedRequests(Collections.emptyList())
-                .build();
+        List<Request> requestsList = Collections.emptyList();
 
         if (!user.getId().equals(event.getInitiator().getId())) {
             throw new ConflictException(String.format("User %s is not the initiator of the event %s.", userId, eventId));
         }
 
         if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
-            return result;
+            return Collections.emptyList();
         }
 
         if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
             throw new ConflictException("Exceeded the limit of participants");
         }
 
-        List<Request> confirmedRequests = new ArrayList<>();
-        List<Request> rejectedRequests = new ArrayList<>();
-
         long vacantPlace = event.getParticipantLimit() - event.getConfirmedRequests();
-
-        List<Request> requestsList = requestRepository.findAllById(requestDto.getRequestIds());
 
         for (Request request : requestsList) {
             if (!request.getStatus().equals(Status.PENDING)) {
                 throw new ConflictException("Request must have status PENDING");
-            }   -
+            }
 
-            if (requestDto.getStatus().equals(Status.CONFIRMED) && vacantPlace > 0) {
+            if (status.equals(Status.CONFIRMED) && vacantPlace > 0) {
                 request.setStatus(Status.CONFIRMED);
                 event.setConfirmedRequests(requestRepository.countAllByEventIdAndStatus(eventId, Status.CONFIRMED));
-                confirmedRequests.add(request);
                 vacantPlace--;
             } else {
                 request.setStatus(Status.REJECTED);
-                rejectedRequests.add(request);
             }
         }
-        result.setConfirmedRequests(RequestMapper.toRequestDtoList(confirmedRequests));
-        result.setRejectedRequests(RequestMapper.toRequestDtoList(rejectedRequests));
 
         eventRepository.save(event);
         requestRepository.saveAll(requestsList);
 
-        return result;
+        return requestsList;
     }
 
 
     public Event updateEventByAdmin(Event event, Long eventId) {
 
-        Event newEvent = unionService.getEventOrNotFound(eventId);
+        Event oldEvent = unionService.getEventOrNotFound(eventId);
 
-        if (event.getState() != null) {
-            if (event.getState().equals(StateAction.PUBLISH_EVENT)) {
+        if (oldEvent.getState() != null) {
+            if (oldEvent.getState().equals(StateAction.PUBLISH_EVENT)) {
 
-                if (!event.getState().equals(State.PENDING)) {
+                if (!oldEvent.getState().equals(State.PENDING)) {
                     throw new ConflictException(String.format("Event - %s, has already been published, cannot be published again ", event.getTitle()));
                 }
                 event.setPublishedOn(LocalDateTime.now());
@@ -162,7 +158,7 @@ public class EventService {
 
             } else {
 
-                if (!event.getState().equals(State.PENDING)) {
+                if (!oldEvent.getState().equals(State.PENDING)) {
                     throw new ConflictException(String.format("Event - %s, cannot be canceled because its statute is not \"PENDING\"", event.getTitle()));
                 }
                 event.setState(State.CANCELED);

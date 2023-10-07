@@ -3,6 +3,7 @@ package ru.ptacticum.main_service.request.mapper;
 import lombok.experimental.UtilityClass;
 import ru.ptacticum.main_service.event.model.Event;
 import ru.ptacticum.main_service.request.dto.RequestDto;
+import ru.ptacticum.main_service.request.dto.RequestUpdateDtoResult;
 import ru.ptacticum.main_service.request.model.Request;
 import ru.ptacticum.main_service.user.model.User;
 import ru.ptacticum.main_service.utils.Status;
@@ -10,6 +11,7 @@ import ru.ptacticum.main_service.utils.Status;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class RequestMapper {
@@ -41,6 +43,14 @@ public class RequestMapper {
         for (Request request : requests) {
             result.add(toRequestDto(request));
         }
+        return result;
+    }
+
+    public RequestUpdateDtoResult toRequestUpdateDto(List<Request> requestList) {
+        RequestUpdateDtoResult result = RequestUpdateDtoResult.builder()
+                .confirmedRequests(toRequestDtoList(requestList.stream().filter(request -> request.getStatus().equals(Status.CONFIRMED)).collect(Collectors.toList())))
+                .rejectedRequests(toRequestDtoList(requestList.stream().filter(request -> request.getStatus().equals(Status.REJECTED)).collect(Collectors.toList())))
+                .build();
         return result;
     }
 }

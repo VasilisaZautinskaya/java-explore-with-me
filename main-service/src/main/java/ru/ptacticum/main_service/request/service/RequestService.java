@@ -40,7 +40,7 @@ public class RequestService {
             throw new ConflictException(String.format("Initiator, user id %s cannot give a request to participate in his event", user.getId()));
         }
 
-        if (requestRepository.findByRequesterIdAndEventId(userId, eventId).isPresent()) {
+        if (requestRepository.getByRequesterIdAndEventId(userId, eventId).isPresent()) {
             throw new ConflictException(String.format("You have already applied to participate in Event %s", event.getTitle()));
         }
 
@@ -73,7 +73,7 @@ public class RequestService {
     public List<Request> getRequestsByUserId(Long userId) {
 
         unionService.getUserOrNotFound(userId);
-        List<Request> requestList = requestRepository.findByRequesterId(userId);
+        List<Request> requestList = requestRepository.getByRequesterId(userId);
 
         return requestList;
     }
