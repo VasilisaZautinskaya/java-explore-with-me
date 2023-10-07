@@ -42,7 +42,6 @@ public class StatsRepositoryImpl implements StatsRepository {
                 "uri", stats.getUri())
         );
 
-
     }
 
     public List<ViewStats> getAllStatsDistinctIp(LocalDateTime start, LocalDateTime end) {

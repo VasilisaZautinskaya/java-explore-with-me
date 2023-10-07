@@ -21,7 +21,7 @@ public class StatsController {
 
     @PostMapping("/hit")
     public void addHit(@Valid @RequestBody HitDto hitDto) {
-         statsService.addHit(StatsMapper.toStats(hitDto));
+        statsService.addHit(StatsMapper.toStats(hitDto));
     }
 
     @GetMapping("/stats")
