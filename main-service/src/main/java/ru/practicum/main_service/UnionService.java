@@ -35,7 +35,7 @@ public class UnionService {
         Optional<User> user = userRepository.findById(userId);
 
         if (user.isEmpty()) {
-            throw new NotFoundException(User.class, "User id " + userId + " not found.");
+            throw new NotFoundException(User.class, "Пользователь с айди " + userId + " не найден.");
         } else {
             return user.get();
         }
@@ -46,7 +46,7 @@ public class UnionService {
         Optional<Category> category = categoryRepository.findById(categoryId);
 
         if (category.isEmpty()) {
-            throw new NotFoundException(Category.class, "Category id " + categoryId + " not found.");
+            throw new NotFoundException(Category.class, "Категория с айди " + categoryId + " не найдена.");
         } else {
             return category.get();
         }
@@ -57,7 +57,7 @@ public class UnionService {
         Optional<Event> event = eventRepository.findById(eventId);
 
         if (event.isEmpty()) {
-            throw new NotFoundException(Event.class, "Event id " + eventId + " not found.");
+            throw new NotFoundException(Event.class, "Событие с айди " + eventId + " не найдено.");
         } else {
             return event.get();
         }
@@ -68,7 +68,7 @@ public class UnionService {
         Optional<Request> request = requestRepository.findById(requestId);
 
         if (request.isEmpty()) {
-            throw new NotFoundException(Request.class, "Request id " + requestId + " not found.");
+            throw new NotFoundException(Request.class, "Запрос с айди " + requestId + " не найден.");
         } else {
             return request.get();
         }
