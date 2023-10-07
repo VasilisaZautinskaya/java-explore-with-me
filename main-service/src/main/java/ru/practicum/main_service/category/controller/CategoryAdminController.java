@@ -29,11 +29,11 @@ public class CategoryAdminController {
 
     @PatchMapping("/{catId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public CategoryDto updateCategory(@Valid @RequestBody Category category,
+    public CategoryDto updateCategory(@Valid @RequestBody CategoryDto categoryDto,
                                       @PathVariable("catId") Long categoryId) {
 
-        log.info("Обновление категории {} ", category.getName());
-        return CategoryMapper.toCategoryDto(categoryService.updateCategory(category, categoryId));
+        log.info("Обновление категории {} ", categoryDto.getName());
+        return CategoryMapper.toCategoryDto(categoryService.updateCategory(categoryDto.getName(), categoryId));
     }
 
     @DeleteMapping("/{catId}")

@@ -25,7 +25,7 @@ public class CategoryPublicController {
     public List<CategoryDto> getCategories(@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
-        log.info("List Categories, where: from = {}, size = {}", from, size);
+        log.info("Получение списка всех категорий по параметрам: from = {}, size = {}", from, size);
         return CategoryMapper.toCategoryListDto(categoryService.getCategories(from, size));
     }
 
@@ -33,7 +33,7 @@ public class CategoryPublicController {
     @ResponseStatus(value = HttpStatus.OK)
     public CategoryDto getCategory(@PathVariable("catId") Long categoryId) {
 
-        log.info("Get Category id {}", categoryId);
+        log.info("Получение категории по её id {}", categoryId);
         return CategoryMapper.toCategoryDto(categoryService.getCategoryById(categoryId));
     }
 }

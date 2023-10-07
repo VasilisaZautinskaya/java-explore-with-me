@@ -162,7 +162,7 @@ public class EventService {
             }
         }
 
-        return baseUpdateEvent(event, event);
+        return baseUpdateEvent(oldEvent, event);
     }
 
     public List<Event> getEventsByAdmin

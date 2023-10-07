@@ -24,10 +24,10 @@ public class CategoryService {
     }
 
 
-    public Category updateCategory(Category newCategory, Long categoryId) {
+    public Category updateCategory(String name, Long categoryId) {
 
         Category category = unionService.getCategoryOrNotFound(categoryId);
-        category.setName(category.getName());
+        category.setName(name);
         categoryRepository.save(category);
 
         return category;
