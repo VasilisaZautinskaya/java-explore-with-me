@@ -3,7 +3,6 @@ package ru.practicum.main_service.category.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main_service.UnionService;
 import ru.practicum.main_service.category.repository.CategoryRepository;
 import ru.practicum.main_service.exception.ConflictException;
@@ -13,7 +12,6 @@ import ru.practicum.main_service.event.repository.EventRepository;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @AllArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
