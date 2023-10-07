@@ -1,12 +1,16 @@
 package ru.practicum.stats_client;
 
-import org.springframework.http.*;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
-import java.util.Map;
 
 public class BaseClient {
     protected final RestTemplate rest;
@@ -23,20 +27,20 @@ public class BaseClient {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
 
-    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path,
-                                                          @Nullable Map<String, Object> parameters, @Nullable T body) {
+    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, @Nullable Map<String, Object> parameters, @Nullable T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
-        ResponseEntity<Object> statsServerResponse;
+
+        ResponseEntity<Object> statsServiceResponse;
         try {
             if (parameters != null) {
-                statsServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
+                statsServiceResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
-                statsServerResponse = rest.exchange(path, method, requestEntity, Object.class);
+                statsServiceResponse = rest.exchange(path, method, requestEntity, Object.class);
             }
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
         }
-        return prepareGatewayResponse(statsServerResponse);
+        return prepareGatewayResponse(statsServiceResponse);
     }
 
     private HttpHeaders defaultHeaders() {

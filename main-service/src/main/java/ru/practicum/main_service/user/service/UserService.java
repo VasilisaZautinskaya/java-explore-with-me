@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main_service.UnionService;
 import ru.practicum.main_service.user.model.User;
 import ru.practicum.main_service.user.repository.UserRepository;
@@ -13,15 +14,18 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
     private final UnionService unionService;
 
+    @Transactional
     public void deleteUser(long userId) {
         unionService.getUserOrNotFound(userId);
         userRepository.deleteById(userId);
     }
 
+    @Transactional
     public User addUser(User user) {
         return userRepository.save(user);
     }

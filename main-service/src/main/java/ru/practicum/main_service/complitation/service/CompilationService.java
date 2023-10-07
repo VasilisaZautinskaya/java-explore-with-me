@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main_service.UnionService;
 import ru.practicum.main_service.complitation.repository.CompilationRepository;
 import ru.practicum.main_service.complitation.model.Compilation;
@@ -15,12 +16,14 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @AllArgsConstructor
 public class CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
     private final UnionService unionService;
 
+    @Transactional
     public Compilation addCompilation(Compilation compilation) {
 
         if (compilation.getPinned() == null) {
@@ -36,12 +39,14 @@ public class CompilationService {
         return compilation;
     }
 
+    @Transactional
     public void deleteCompilation(Long compId) {
 
         unionService.getCompilationOrNotFound(compId);
         compilationRepository.deleteById(compId);
     }
 
+    @Transactional
     public Compilation updateCompilation(Long compId, Compilation newCompilation) {
 
         Compilation oldCompilation = unionService.getCompilationOrNotFound(compId);

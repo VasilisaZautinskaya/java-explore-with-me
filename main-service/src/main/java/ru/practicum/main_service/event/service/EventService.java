@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main_service.UnionService;
 import ru.practicum.stats_client.StatsClient;
 import ru.practicum.main_service.exception.ConflictException;
@@ -32,6 +33,7 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class EventService {
     private final UnionService unionService;
     private final EventRepository eventRepository;
@@ -41,7 +43,7 @@ public class EventService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     public static final LocalDateTime START_HISTORY = LocalDateTime.of(1970, 1, 1, 0, 0);
 
-
+    @Transactional
     public Event addEvent(Event event) {
         return eventRepository.save(event);
     }
@@ -62,6 +64,7 @@ public class EventService {
         return eventRepository.findByInitiatorIdAndId(userId, eventId);
     }
 
+    @Transactional
     public Event updateEventByUserId(Event newEvent, Long userId, Long eventId) {
 
         User updater = unionService.getUserOrNotFound(userId);
@@ -89,11 +92,13 @@ public class EventService {
         return requestRepository.getByEventId(eventId);
     }
 
+    @Transactional
     public List<Request> getRequestsById(List<Long> requestIds) {
         List<Request> requests = requestRepository.findAllById(requestIds);
         return requests;
     }
 
+    @Transactional
     public List<Request> updateStatusRequestsForEventIdByUserId(
             List<Request> requests,
             Long userId,
@@ -139,6 +144,7 @@ public class EventService {
         return requestsList;
     }
 
+    @Transactional
 
     public Event updateEventByAdmin(Event event, Long eventId) {
 
@@ -190,7 +196,6 @@ public class EventService {
 
         return eventRepository.findEventsByAdminFromParam(users, statesValue, categories, startTime, endTime, pageRequest);
     }
-
 
     public Event getEventById(Long eventId, String uri, String ip) {
 
@@ -278,7 +283,7 @@ public class EventService {
 
     private void sendInfo(String uri, String ip) {
         HitDto hitDto = HitDto.builder()
-                .app("ewm-service")
+                .app("main-service")
                 .uri(uri)
                 .ip(ip)
                 .timestamp(LocalDateTime.now().toString())

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main_service.UnionService;
 import ru.practicum.main_service.exception.ConflictException;
 import ru.practicum.main_service.request.repository.RequestRepository;
@@ -21,12 +22,14 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class RequestService {
 
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
     private final UnionService unionService;
 
+    @Transactional
     public Request addRequest(Long userId, Long eventId) throws ConflictException {
 
         User user = unionService.getUserOrNotFound(userId);
@@ -78,7 +81,7 @@ public class RequestService {
         return requestList;
     }
 
-
+    @Transactional
     public Request cancelRequest(Long userId, Long requestId) {
 
         unionService.getUserOrNotFound(userId);
