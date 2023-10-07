@@ -39,7 +39,7 @@ public class EventPublicController {
         String uri = request.getRequestURI();
         String ip = request.getRemoteAddr();
 
-        log.info("Get all events for public witch short info from parameters: text = {}, categories = {}, paid = {}, rangeStart = {}, rangeEnd = {}, onlyAvailable = {}, sort= {}, from = {}, size = {}",
+        log.info("Получение списка событий: text = {}, categories = {}, paid = {}, rangeStart = {}, rangeEnd = {}, onlyAvailable = {}, sort= {}, from = {}, size = {}",
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
         return eventMapper.toEventShortDtoList(eventService.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, uri, ip));
     }
@@ -51,7 +51,7 @@ public class EventPublicController {
         String uri = request.getRequestURI();
         String ip = request.getRemoteAddr();
 
-        log.info("Get Event id {}", id);
+        log.info("Получение события с id{}", id);
         return eventMapper.toEventFullDto(eventService.getEventById(id, uri, ip));
     }
 }

@@ -35,7 +35,7 @@ public class CompilationAdminController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable("compId") Long compId) {
 
-        log.info("Delete Compilation {} ", compId);
+        log.info("Удаление подборки событий с id {} ", compId);
         compilationService.deleteCompilation(compId);
     }
 
@@ -44,8 +44,8 @@ public class CompilationAdminController {
     public CompilationDto updateCompilation(@Valid @RequestBody CompilationUpdateDto compilationUpdateDto,
                                             @PathVariable Long compId) {
 
-        log.info("Update Compilation {} ", compId);
-        Compilation compilation = compilationMapper.toCompilaytionUpdate(compilationUpdateDto);
+        log.info("Обновление подборки событий с id{} ", compId);
+        Compilation compilation = compilationMapper.toCompilationUpdate(compilationUpdateDto);
         return compilationMapper.toCompilationDto(compilationService.updateCompilation(compId, compilation));
     }
 }

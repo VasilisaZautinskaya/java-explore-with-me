@@ -8,6 +8,8 @@ import ru.practicum.main_service.complitation.dto.CompilationUpdateDto;
 import ru.practicum.main_service.complitation.model.Compilation;
 import ru.practicum.main_service.event.dto.EventShortDto;
 import ru.practicum.main_service.event.mapper.EventMapper;
+import ru.practicum.main_service.event.model.Event;
+import ru.practicum.main_service.event.repository.EventRepository;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import java.util.Set;
 public class CompilationMapper {
 
     private final EventMapper eventMapper;
+    private final EventRepository eventRepository;
 
     public CompilationDto toCompilationDto(Compilation compilation) {
 
@@ -37,21 +40,14 @@ public class CompilationMapper {
     }
 
     public Compilation toCompilation(CompilationNewDto compilationNewDto) {
-
+        Set<Event> eventList = eventRepository.findByIdIn(compilationNewDto.getEvents());
         return Compilation.builder()
                 .title(compilationNewDto.getTitle())
+                .events(eventList)
                 .pinned(compilationNewDto.getPinned())
                 .build();
     }
 
-    public Set<CompilationDto> toCompilationDtoSet(Iterable<Compilation> compilations) {
-
-        Set<CompilationDto> result = new HashSet<>();
-        for (Compilation compilation : compilations) {
-            result.add(toCompilationDto(compilation));
-        }
-        return result;
-    }
 
     public List<CompilationDto> toCompilationDtoList(Iterable<Compilation> compilations) {
 
@@ -62,10 +58,12 @@ public class CompilationMapper {
         return result;
     }
 
-    public Compilation toCompilaytionUpdate(CompilationUpdateDto compilationUpdateDto) {
+    public Compilation toCompilationUpdate(CompilationUpdateDto compilationUpdateDto) {
+        Set<Event> eventList = eventRepository.findByIdIn(compilationUpdateDto.getEvents());
         return Compilation.builder()
                 .title(compilationUpdateDto.getTitle())
                 .pinned(compilationUpdateDto.getPinned())
+                .events(eventList)
                 .build();
 
     }

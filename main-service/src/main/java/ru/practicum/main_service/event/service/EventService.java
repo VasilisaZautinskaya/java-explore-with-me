@@ -65,7 +65,7 @@ public class EventService {
     }
 
     @Transactional
-    public Event updateEventByUserId(Event newEvent, Long userId, Long eventId) {
+    public Event updateEventByUserId(Event newEvent, Long userId, Long eventId, StateAction stateAction) {
 
         User updater = unionService.getUserOrNotFound(userId);
         Event oldEvent = unionService.getEventOrNotFound(eventId);
@@ -77,7 +77,7 @@ public class EventService {
             throw new ConflictException(String.format("User %s cannot update event %s that has already been published.", userId, eventId));
         }
 
-        return baseUpdateEvent(oldEvent, newEvent);
+        return baseUpdateEvent(oldEvent, newEvent, stateAction);
     }
 
     public List<Request> getRequestsForEventIdByUserId(Long userId, Long eventId) {
@@ -108,7 +108,6 @@ public class EventService {
 
         User user = unionService.getUserOrNotFound(userId);
         Event event = unionService.getEventOrNotFound(eventId);
-        List<Request> requestsList = Collections.emptyList();
 
         if (!user.getId().equals(event.getInitiator().getId())) {
             throw new ConflictException(String.format("User %s is not the initiator of the event %s.", userId, eventId));
@@ -124,7 +123,7 @@ public class EventService {
 
         long vacantPlace = event.getParticipantLimit() - event.getConfirmedRequests();
 
-        for (Request request : requestsList) {
+        for (Request request : requests) {
             if (!request.getStatus().equals(Status.PENDING)) {
                 throw new ConflictException("Request must have status PENDING");
             }
@@ -139,9 +138,9 @@ public class EventService {
         }
 
         eventRepository.save(event);
-        requestRepository.saveAll(requestsList);
+        requestRepository.saveAll(requests);
 
-        return requestsList;
+        return requests;
     }
 
 
@@ -167,7 +166,7 @@ public class EventService {
             }
         }
 
-        return baseUpdateEvent(oldEvent, event);
+        return baseUpdateEvent(oldEvent, event, stateAction);
     }
 
     public List<Event> getEventsByAdmin
@@ -236,7 +235,7 @@ public class EventService {
         return events;
     }
 
-    private Event baseUpdateEvent(Event oldEvent, Event newEvent) {
+    private Event baseUpdateEvent(Event oldEvent, Event newEvent, StateAction stateAction) {
 
         if (newEvent.getAnnotation() != null && !newEvent.getAnnotation().isBlank()) {
             oldEvent.setAnnotation(newEvent.getAnnotation());
@@ -262,13 +261,13 @@ public class EventService {
         if (newEvent.getRequestModeration() != null) {
             oldEvent.setRequestModeration(newEvent.getRequestModeration());
         }
-        if (newEvent.getState() != null) {
-            if (newEvent.getState() == State.PUBLISHED) {
+        if (stateAction != null) {
+            if (stateAction == StateAction.PUBLISH_EVENT) {
                 oldEvent.setState(State.PUBLISHED);
                 oldEvent.setPublishedOn(LocalDateTime.now());
-            } else if (newEvent.getState() == State.CANCELED) {
+            } else if (stateAction == StateAction.REJECT_EVENT || stateAction == StateAction.CANCEL_REVIEW) {
                 oldEvent.setState(State.CANCELED);
-            } else if (newEvent.getState() == State.PENDING) {
+            } else if (stateAction == StateAction.SEND_TO_REVIEW) {
                 oldEvent.setState(State.PENDING);
             }
         }

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.main_service.event.dto.EventFullDto;
 import ru.practicum.main_service.event.dto.EventUpdateDto;
 import ru.practicum.main_service.event.mapper.EventMapper;
-import ru.practicum.main_service.event.model.Event;
 import ru.practicum.main_service.event.service.EventService;
 
 import javax.validation.Valid;
