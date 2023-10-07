@@ -22,7 +22,7 @@ import ru.practicum.main_service.event.repository.EventRepository;
 import ru.practicum.main_service.event.repository.LocationRepository;
 import ru.practicum.main_service.request.model.Request;
 import ru.practicum.main_service.user.model.User;
-import ru.practicum.stats_server.model.ViewStats;
+import ru.practicum.stats_dto.ViewStatsDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -290,7 +290,7 @@ public class EventService {
 
         String uri = "/events/" + eventId;
         ResponseEntity<Object> response = statsClient.getStats(START_HISTORY, LocalDateTime.now(), uri, true);
-        List<ViewStats> result = objectMapper.convertValue(response.getBody(), new TypeReference<>() {
+        List<ViewStatsDto> result = objectMapper.convertValue(response.getBody(), new TypeReference<>() {
         });
 
         if (result.isEmpty()) {
