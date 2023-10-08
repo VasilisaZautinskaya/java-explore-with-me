@@ -71,10 +71,10 @@ public class EventService {
         Event oldEvent = unionService.getEventOrNotFound(eventId);
 
         if (!updater.getId().equals(oldEvent.getInitiator().getId())) {
-            throw new ConflictException(String.format("User %s is not the initiator of the event %s.", userId, eventId));
+            throw new ConflictException(String.format("Пользователь %s не является инициатором события %s.", userId, eventId));
         }
         if (oldEvent.getState().equals(State.PUBLISHED)) {
-            throw new ConflictException(String.format("User %s cannot update event %s that has already been published.", userId, eventId));
+            throw new ConflictException(String.format("Пользователь %s не может обновить данное событие %s", userId, eventId));
         }
 
         return baseUpdateEvent(oldEvent, newEvent, stateAction);
@@ -94,8 +94,7 @@ public class EventService {
 
     @Transactional
     public List<Request> getRequestsById(List<Long> requestIds) {
-        List<Request> requests = requestRepository.findAllById(requestIds);
-        return requests;
+        return requestRepository.findAllById(requestIds);
     }
 
     @Transactional

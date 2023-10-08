@@ -25,7 +25,7 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public UserDto addUser(@Valid @RequestBody User user) {
 
-        log.info("Add User {} ", user.getName());
+        log.info("Добавление пользователя {} ", user.getName());
         return UserMapper.toUserDto(userService.addUser(user));
     }
 
