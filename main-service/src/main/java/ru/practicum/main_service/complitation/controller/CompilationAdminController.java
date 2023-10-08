@@ -44,8 +44,7 @@ public class CompilationAdminController {
     public CompilationDto updateCompilation(@Valid @RequestBody CompilationUpdateDto compilationUpdateDto,
                                             @PathVariable Long compId) {
 
-        log.info("Обновление подборки событий с id{} ", compId);
-        Compilation compilation = compilationMapper.toCompilationUpdate(compilationUpdateDto);
-        return compilationMapper.toCompilationDto(compilationService.updateCompilation(compId, compilation));
+        log.info("Update Compilation {} ", compId);
+        return compilationService.updateCompilation(compId, compilationUpdateDto);
     }
 }

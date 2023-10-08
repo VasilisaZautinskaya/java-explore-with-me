@@ -40,7 +40,7 @@ public class CompilationMapper {
     }
 
     public Compilation toCompilation(CompilationNewDto compilationNewDto) {
-        Set<Event> eventList = eventRepository.findByIdIn(compilationNewDto.getEvents());
+        List<Event> eventList = eventRepository.findByIdIn(compilationNewDto.getEvents());
         return Compilation.builder()
                 .title(compilationNewDto.getTitle())
                 .events(eventList)
@@ -59,7 +59,7 @@ public class CompilationMapper {
     }
 
     public Compilation toCompilationUpdate(CompilationUpdateDto compilationUpdateDto) {
-        Set<Event> eventList = eventRepository.findByIdIn(compilationUpdateDto.getEvents());
+        List<Event> eventList = eventRepository.findByIdIn(compilationUpdateDto.getEvents());
         return Compilation.builder()
                 .title(compilationUpdateDto.getTitle())
                 .pinned(compilationUpdateDto.getPinned())

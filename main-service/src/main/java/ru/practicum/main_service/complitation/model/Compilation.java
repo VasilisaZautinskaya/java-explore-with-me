@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.main_service.event.model.Event;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,10 +34,10 @@ public class Compilation {
     @JoinTable(name = "compilations_events",
             joinColumns = @JoinColumn(name = "compilation_id"),     //внешний ключ для объекта, для которого определяем сопоставление ассоциации.
             inverseJoinColumns = @JoinColumn(name = "event_id"))    //внешний ключ связанного объекта.
-    Set<Event> events;
+    List<Event> events;
 
-    public Set<Long> getEventsIds() {
-        return events.stream().map(Event::getId).collect(Collectors.toSet());
+    public List<Long> getEventsIds() {
+        return events.stream().map(Event::getId).collect(Collectors.toList());
     }
 }
 

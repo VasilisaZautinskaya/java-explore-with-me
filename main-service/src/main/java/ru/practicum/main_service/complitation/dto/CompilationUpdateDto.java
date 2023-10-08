@@ -6,14 +6,14 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.Size;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompilationUpdateDto {
 
-    Set<Long> events;
+    List<Long> events;
 
     Boolean pinned;
 

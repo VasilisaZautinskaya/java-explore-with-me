@@ -10,7 +10,6 @@ import ru.practicum.main_service.event.model.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
@@ -21,7 +20,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByCategoryId(Long categoryId);
 
-    Set<Event> findByIdIn(Set<Long> events);
+    List<Event> findByIdIn(List<Long> events);
 
     @Query(value = "SELECT e FROM Event AS e " +
             "WHERE (:users IS NULL OR e.initiator.id IN :users) " +

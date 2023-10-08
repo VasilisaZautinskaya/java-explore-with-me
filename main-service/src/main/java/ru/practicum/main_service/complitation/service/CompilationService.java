@@ -6,6 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main_service.UnionService;
+import ru.practicum.main_service.complitation.dto.CompilationDto;
+import ru.practicum.main_service.complitation.dto.CompilationUpdateDto;
+import ru.practicum.main_service.complitation.mapper.CompilationMapper;
 import ru.practicum.main_service.complitation.repository.CompilationRepository;
 import ru.practicum.main_service.complitation.model.Compilation;
 import ru.practicum.main_service.event.repository.EventRepository;
@@ -23,6 +26,8 @@ public class CompilationService {
     private final EventRepository eventRepository;
     private final UnionService unionService;
 
+    private final CompilationMapper compilationMapper;
+
     @Transactional
     public Compilation addCompilation(Compilation compilation) {
 
@@ -30,7 +35,7 @@ public class CompilationService {
             compilation.setPinned(false);
         }
         if (compilation.getEvents() == null || compilation.getEvents().isEmpty()) {
-            compilation.setEvents(Collections.emptySet());
+            compilation.setEvents(Collections.emptyList());
         } else {
             compilation.setEvents(eventRepository.findByIdIn(compilation.getEventsIds()));
         }
@@ -47,27 +52,26 @@ public class CompilationService {
     }
 
     @Transactional
-    public Compilation updateCompilation(Long compId, Compilation newCompilation) {
+    public CompilationDto updateCompilation(Long compId, CompilationUpdateDto compilationUpdateDto) {
 
-        Compilation oldCompilation = unionService.getCompilationOrNotFound(compId);
+        Compilation compilation = unionService.getCompilationOrNotFound(compId);
 
-        if (oldCompilation.getPinned() == null) {
-            newCompilation.setPinned(false);
+        if (compilation.getPinned() == null) {
+            compilation.setPinned(false);
         }
 
-        if (oldCompilation.getEvents() == null || oldCompilation.getEvents().isEmpty()) {
-            newCompilation.setEvents(Collections.emptySet());
+        if (compilationUpdateDto.getEvents() == null || compilationUpdateDto.getEvents().isEmpty()) {
+            compilation.setEvents(Collections.emptyList());
         } else {
-            newCompilation.setEvents(eventRepository.findByIdIn(oldCompilation.getEventsIds()));
+            compilation.setEvents(eventRepository.findByIdIn(compilationUpdateDto.getEvents()));
         }
 
-        if (oldCompilation.getTitle() != null) {
-            newCompilation.setTitle(oldCompilation.getTitle());
+        if (compilationUpdateDto.getTitle() != null) {
+            compilation.setTitle(compilationUpdateDto.getTitle());
         }
 
-        newCompilation = compilationRepository.save(oldCompilation);
-        return newCompilation;
-
+        compilation = compilationRepository.save(compilation);
+        return compilationMapper.toCompilationDto(compilation);
     }
 
     public List<Compilation> getCompilations(Boolean pinned, Integer from, Integer size) {
@@ -79,15 +83,12 @@ public class CompilationService {
             compilations = compilationRepository.findByPinned(pinned, pageRequest);
         } else {
             compilations = compilationRepository.findAll(pageRequest).getContent();
-            ;
         }
         return new ArrayList<>(compilations);
     }
 
     public Compilation getCompilationById(Long compId) {
-
-        Compilation compilation = unionService.getCompilationOrNotFound(compId);
-
-        return compilation;
+        return unionService.getCompilationOrNotFound(compId);
     }
+
 }
