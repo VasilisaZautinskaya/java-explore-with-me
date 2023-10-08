@@ -159,7 +159,7 @@ public class EventService {
 
             } else {
 
-                if (!stateAction.equals(State.PENDING)) {
+                if (!oldEvent.getState().equals(State.PENDING)) {
                     throw new ConflictException(String.format("Event - %s, cannot be canceled because its statute is not \"PENDING\"", event.getTitle()));
                 }
                 event.setState(State.CANCELED);
@@ -218,7 +218,7 @@ public class EventService {
 
         if (startTime != null && endTime != null) {
             if (startTime.isAfter(endTime)) {
-                throw new ValidationException("Start must be after End");
+                throw new ValidationException("Время окончания не может быть раньше времени начала");
             }
         }
 
