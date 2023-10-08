@@ -143,7 +143,7 @@ public class EventService {
         return requests;
     }
 
-
+    @Transactional
     public Event updateEventByAdmin(StateAction stateAction, Long eventId, Event event) {
 
         Event oldEvent = unionService.getEventOrNotFound(eventId);
