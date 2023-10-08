@@ -29,6 +29,7 @@ public class UnionService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final CompilationRepository compilationRepository;
+    private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public User getUserOrNotFound(Long userId) {
 
@@ -86,7 +87,7 @@ public class UnionService {
     }
 
     public LocalDateTime parseDate(String date) {
-        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         if (date != null) {
             return LocalDateTime.parse(date, FORMATTER);
         } else {
