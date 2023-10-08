@@ -25,19 +25,19 @@ public class Stats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
-    @Column(name = "app")
+    @Column
     @NotNull
     String app;
 
     @NotNull
     String uri;
 
-    @Column(name = "ip")
+    @Column
     @Size(max = 15)
     @NotNull
     String ip;
 
-    @Column(name = "timestamp")
+    @Column
     @NotNull
     LocalDateTime timestamp;
 }
