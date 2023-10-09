@@ -35,7 +35,7 @@ public class UserController {
                                   @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                   @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
-        log.info("List Users, where ids: {}, from = {}, size = {}", ids, from, size);
+        log.info("Получение списка пользователей с параметрами: {}, from = {}, size = {}", ids, from, size);
         return UserMapper.toUserDtoList(userService.getUsers(ids, from, size));
     }
 
@@ -43,7 +43,7 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteUser(@Positive @PathVariable("userId") Long userId) {
 
-        log.info("User {} deleted ", userId);
+        log.info("Пользователь {} удалён", userId);
         userService.deleteUser(userId);
     }
 }

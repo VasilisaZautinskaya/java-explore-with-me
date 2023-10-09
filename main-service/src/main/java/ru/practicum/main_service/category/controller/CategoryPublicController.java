@@ -25,7 +25,7 @@ public class CategoryPublicController {
     public List<CategoryDto> getCategories(@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
-        log.info("Получение списка всех категорий по параметрам: from = {}, size = {}", from, size);
+        log.info("Получение списка всех категорий с параметрами: from = {}, size = {}", from, size);
         return CategoryMapper.toCategoryListDto(categoryService.getCategories(from, size));
     }
 

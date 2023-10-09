@@ -28,7 +28,7 @@ public class CompilationPublicController {
                                                 @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
-        log.info("Get all compilations from pinned = {}, and from = {}, size = {}", pinned, from, size);
+        log.info("Получение спска всех событий с параметрами pinned = {}, and from = {}, size = {}", pinned, from, size);
         return compilationMapper.toCompilationDtoList(compilationService.getCompilations(pinned, from, size));
     }
 
@@ -36,7 +36,7 @@ public class CompilationPublicController {
     @ResponseStatus(value = HttpStatus.OK)
     public CompilationDto getCompilationById(@PathVariable Long compId) {
 
-        log.info("Get Compilation id {}", compId);
+        log.info("Получение списка событий по айди {}", compId);
         return compilationMapper.toCompilationDto(compilationService.getCompilationById(compId));
     }
 }
