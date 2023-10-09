@@ -23,10 +23,10 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public UserDto addUser(@Valid @RequestBody User user) {
+    public UserDto addUser(@Valid @RequestBody UserDto userDto) {
 
-        log.info("Добавление пользователя {} ", user.getName());
-        return UserMapper.toUserDto(userService.addUser(user));
+        log.info("Добавление пользователя {} ", userDto.getName());
+        return UserMapper.toUserDto(userService.addUser(UserMapper.toUser(userDto)));
     }
 
     @GetMapping

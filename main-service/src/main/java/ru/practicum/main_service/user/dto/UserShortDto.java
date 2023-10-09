@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Builder
 public class UserShortDto {
-    @NotNull
+
     Long id;
 
     @NotBlank
