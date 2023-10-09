@@ -11,10 +11,7 @@ import ru.practicum.main_service.event.mapper.EventMapper;
 import ru.practicum.main_service.event.model.Event;
 import ru.practicum.main_service.event.repository.EventRepository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
@@ -40,7 +37,13 @@ public class CompilationMapper {
     }
 
     public Compilation toCompilation(CompilationNewDto compilationNewDto) {
-        List<Event> eventList = eventRepository.findByIdIn(compilationNewDto.getEvents());
+        List<Event> eventList;
+        if (compilationNewDto.getEvents() == null || compilationNewDto.getEvents().isEmpty()) {
+            eventList = Collections.emptyList();
+        } else {
+            eventList = eventRepository.findByIdIn(compilationNewDto.getEvents());
+
+        }
         return Compilation.builder()
                 .title(compilationNewDto.getTitle())
                 .events(eventList)
