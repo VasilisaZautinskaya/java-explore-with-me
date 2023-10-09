@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main_service.user.dto.UserDto;
 import ru.practicum.main_service.user.mapper.UserMapper;
-import ru.practicum.main_service.user.model.User;
 import ru.practicum.main_service.user.service.UserService;
 
 import javax.validation.Valid;
