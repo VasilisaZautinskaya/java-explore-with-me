@@ -47,7 +47,6 @@ public class CategoryService {
         categoryRepository.deleteById(categoryId);
     }
 
-    @Transactional
     public List<Category> getCategories(Integer from, Integer size) {
 
         PageRequest pageRequest = PageRequest.of(from / size, size);

@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static ru.practicum.stats_client.StatsClient.DT_FORMATTER;
+
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -285,7 +287,7 @@ public class EventService {
                 .app("main-service")
                 .uri(uri)
                 .ip(ip)
-                .timestamp(LocalDateTime.now().toString())
+                .timestamp(LocalDateTime.now().format(DT_FORMATTER))
                 .build();
         statsClient.addHit(hitDto);
     }
