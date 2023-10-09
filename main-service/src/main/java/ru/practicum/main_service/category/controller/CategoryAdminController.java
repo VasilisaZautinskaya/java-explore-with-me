@@ -21,10 +21,10 @@ public class CategoryAdminController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CategoryDto addCategory(@Valid @RequestBody Category category) {
+    public CategoryDto addCategory(@Valid @RequestBody CategoryDto categoryDto) {
 
-        log.info("Добавление категории {} ", category.getName());
-        return CategoryMapper.toCategoryDto(categoryService.addCategory(category));
+        log.info("Добавление категории {} ", categoryDto.getName());
+        return CategoryMapper.toCategoryDto(categoryService.addCategory(CategoryMapper.toCategory(categoryDto)));
     }
 
     @PatchMapping("/{catId}")
