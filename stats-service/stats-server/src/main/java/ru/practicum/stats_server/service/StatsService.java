@@ -3,6 +3,7 @@ package ru.practicum.stats_server.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.stats_server.model.Stats;
 import ru.practicum.stats_server.model.ViewStats;
 import ru.practicum.stats_server.repository.StatsRepositoryImpl;
@@ -13,10 +14,11 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class StatsService {
     private final StatsRepositoryImpl statsRepository;
 
-
+    @Transactional
     public void addHit(Stats stats) {
         log.info("Регистрация обращения к {}", stats);
         statsRepository.save(stats);
