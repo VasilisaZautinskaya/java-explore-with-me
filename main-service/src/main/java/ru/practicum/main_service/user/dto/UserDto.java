@@ -3,6 +3,7 @@ package ru.practicum.main_service.user.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -17,6 +18,7 @@ public class UserDto {
     Long id;
 
     @NotBlank
+    @Email
     @Size(min = 6, max = 254)
     String email;
 
