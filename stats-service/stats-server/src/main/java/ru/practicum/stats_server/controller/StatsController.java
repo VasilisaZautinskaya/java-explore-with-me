@@ -3,6 +3,8 @@ package ru.practicum.stats_server.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.stats_dto.HitDto;
 import ru.practicum.stats_dto.ViewStatsDto;
@@ -16,10 +18,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
+    @ResponseStatus(HttpStatus.CREATED)
     public void addHit(@Valid @RequestBody HitDto hitDto) {
          statsService.addHit(StatsMapper.toStats(hitDto));
     }
