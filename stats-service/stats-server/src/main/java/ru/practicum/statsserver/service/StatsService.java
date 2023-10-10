@@ -8,6 +8,7 @@ import ru.practicum.statsserver.model.Stats;
 import ru.practicum.statsserver.model.ViewStats;
 import ru.practicum.statsserver.repository.StatsRepositoryImpl;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class StatsService {
 
         if (start.isAfter(end)) {
             log.error("Недопустимый временной промежуток.");
-            throw new IllegalArgumentException("Недопустимый временной промежуток.");
+            throw new ValidationException("Недопустимый временной промежуток.");
         }
         if (uris == null || uris.isEmpty()) {
             if (unique) {
