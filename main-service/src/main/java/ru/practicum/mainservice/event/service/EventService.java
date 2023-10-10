@@ -88,7 +88,7 @@ public class EventService {
         Event event = unionService.getEventOrNotFound(eventId);
 
         if (!user.getId().equals(event.getInitiator().getId())) {
-            throw new ConflictException(String.format("User %s is not the initiator of the event %s.", userId, eventId));
+            throw new ConflictException(String.format("Пользователь %s не является инициатором события %s.", userId, eventId));
         }
 
         return requestRepository.getByEventId(eventId);
@@ -199,7 +199,7 @@ public class EventService {
 
         Event event = unionService.getEventOrNotFound(eventId);
         if (!event.getState().equals(State.PUBLISHED)) {
-            throw new NotFoundException(Event.class, String.format("Event %s not published", eventId));
+            throw new NotFoundException(Event.class, String.format("Событие %s не опубликовано", eventId));
         }
 
         sendInfo(uri, ip);
