@@ -34,57 +34,31 @@ public class UnionService {
 
     public User getUserOrNotFound(Long userId) {
 
-        Optional<User> user = userRepository.findById(userId);
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException(User.class, "Пользователь с айди " + userId + " не найден."));
 
-        if (user.isEmpty()) {
-            throw new NotFoundException(User.class, "Пользователь с айди " + userId + " не найден.");
-        } else {
-            return user.get();
-        }
     }
 
     public Category getCategoryOrNotFound(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException(Category.class, "Категория с айди " + categoryId + " не найдена."));
 
-        Optional<Category> category = categoryRepository.findById(categoryId);
-
-        if (category.isEmpty()) {
-            throw new NotFoundException(Category.class, "Категория с айди " + categoryId + " не найдена.");
-        } else {
-            return category.get();
-        }
     }
 
     public Event getEventOrNotFound(Long eventId) {
 
-        Optional<Event> event = eventRepository.findById(eventId);
+        return eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(Event.class, "Событие с айди " + eventId + " не найдено."));
 
-        if (event.isEmpty()) {
-            throw new NotFoundException(Event.class, "Событие с айди " + eventId + " не найдено.");
-        } else {
-            return event.get();
-        }
     }
 
     public Request getRequestOrNotFound(Long requestId) {
 
-        Optional<Request> request = requestRepository.findById(requestId);
+        return requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException(Request.class, "Запрос с айди " + requestId + " не найден."));
 
-        if (request.isEmpty()) {
-            throw new NotFoundException(Request.class, "Запрос с айди " + requestId + " не найден.");
-        } else {
-            return request.get();
-        }
     }
 
     public Compilation getCompilationOrNotFound(Long compId) {
 
-        Optional<Compilation> compilation = compilationRepository.findById(compId);
+        return compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException(Compilation.class, "Compilation id " + compId + " not found."));
 
-        if (compilation.isEmpty()) {
-            throw new NotFoundException(Compilation.class, "Compilation id " + compId + " not found.");
-        } else {
-            return compilation.get();
-        }
     }
 
     public LocalDateTime parseDate(String date) {
