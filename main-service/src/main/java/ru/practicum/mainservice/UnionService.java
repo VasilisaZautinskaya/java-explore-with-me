@@ -17,7 +17,6 @@ import ru.practicum.mainservice.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 @Slf4j
 @Service
