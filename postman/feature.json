@@ -326,11 +326,11 @@
 						"variable": [
 							{
 								"key": "userId",
-								"value": "136"
+								"value": "1"
 							},
 							{
 								"key": "eventId",
-								"value": "106"
+								"value": "1"
 							}
 						]
 					}
@@ -387,11 +387,11 @@
 						"variable": [
 							{
 								"key": "userId",
-								"value": "136"
+								"value": "1"
 							},
 							{
 								"key": "eventId",
-								"value": "107"
+								"value": "2"
 							}
 						]
 					}
@@ -1490,7 +1490,7 @@
 						"variable": [
 							{
 								"key": "userId",
-								"value": "137"
+								"value": "2"
 							}
 						]
 					}
@@ -1569,7 +1569,7 @@
 						"variable": [
 							{
 								"key": "eventId",
-								"value": "108"
+								"value": "3"
 							}
 						]
 					}
