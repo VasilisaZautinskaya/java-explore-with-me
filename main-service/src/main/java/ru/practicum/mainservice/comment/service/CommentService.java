@@ -14,7 +14,6 @@ import ru.practicum.mainservice.event.model.Event;
 import ru.practicum.mainservice.exception.ConflictException;
 import ru.practicum.mainservice.exception.ValidationException;
 import ru.practicum.mainservice.user.model.User;
-import ru.practicum.mainservice.utils.State;
 
 import java.time.LocalDateTime;
 import java.util.List;
