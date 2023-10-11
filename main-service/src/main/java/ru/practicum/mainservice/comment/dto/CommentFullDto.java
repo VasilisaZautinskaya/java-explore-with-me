@@ -3,12 +3,11 @@ package ru.practicum.mainservice.comment.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.user.dto.UserDto;
+import ru.practicum.mainservice.event.dto.EventFullDto;
+import ru.practicum.mainservice.user.dto.UserDto;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.Util.DATE_FORMAT;
 
 @Data
 @Builder
@@ -25,6 +24,6 @@ public class CommentFullDto {
 
     String message;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime created;
 }

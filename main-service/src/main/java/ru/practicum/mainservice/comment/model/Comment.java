@@ -3,14 +3,13 @@ package ru.practicum.mainservice.comment.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.event.model.Event;
-import ru.practicum.user.User;
+import ru.practicum.mainservice.event.model.Event;
+import ru.practicum.mainservice.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-import static ru.practicum.Util.DATE_FORMAT;
 
 @Data
 @Builder
@@ -40,7 +39,7 @@ public class Comment {
     String message;
 
     @Column(name = "created")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime created;
 }
 

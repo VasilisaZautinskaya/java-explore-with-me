@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.Util.DATE_FORMAT;
 
 @Data
 @Builder
@@ -21,6 +20,6 @@ public class CommentShortDto {
 
     String message;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime created;
 }
