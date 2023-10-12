@@ -10,3 +10,6 @@ java-explore-with-me
 Основной сервис - https://github.com/VasilisaZautinskaya/java-explore-with-me/blob/main/ewm-main-service-spec.json
 
 Сервис статистики - https://github.com/VasilisaZautinskaya/java-explore-with-me/blob/main/ewm-stats-service-spec.json
+
+Реализованные эндпоинты:
+
