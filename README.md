@@ -6,3 +6,5 @@ java-explore-with-me
 
 
 Ссылка на pull - request: https://github.com/VasilisaZautinskaya/java-explore-with-me/pull/8
+Основной сервис - https://github.com/VasilisaZautinskaya/java-explore-with-me/blob/main/ewm-main-service-spec.json
+Сервис статистики - https://github.com/VasilisaZautinskaya/java-explore-with-me/blob/main/ewm-stats-service-spec.json
