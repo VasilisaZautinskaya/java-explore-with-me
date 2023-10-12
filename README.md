@@ -11,7 +11,12 @@ java-explore-with-me
 Спецификация сервиса статистики - https://github.com/VasilisaZautinskaya/java-explore-with-me/blob/main/ewm-stats-service-spec.json
 Реализованные эндпоинты:
 
-- POST/hit - сохранение информа
+- POST/hit - сохранение информации о том, что к эндпоинту был запрос;
+- GET/stats - получение статистики по посещениям;
+- POST/admin/categories - добавление новой категории;
+- DELETE//admin/categories/{catId} - удаление категории;
+- PATCH/admin/categories/{catId} - изменения категории;
+- 
 
 
 
