@@ -3,6 +3,8 @@ package ru.practicum.mainservice;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.mainservice.comment.model.Comment;
+import ru.practicum.mainservice.comment.repository.CommentRepository;
 import ru.practicum.mainservice.exception.NotFoundException;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
@@ -28,6 +30,8 @@ public class UnionService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final CompilationRepository compilationRepository;
+
+    private final CommentRepository commentRepository;
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -57,6 +61,10 @@ public class UnionService {
     public Compilation getCompilationOrNotFound(Long compId) {
 
         return compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException(Compilation.class, "Compilation id " + compId + " not found."));
+    }
+
+    public Comment getCommentOrNotFound(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException(Comment.class, "Comment id" + commentId + "not found"));
 
     }
 

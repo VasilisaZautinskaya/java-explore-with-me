@@ -5,13 +5,15 @@ java-explore-with-me
 Состоит из четырех микросервисов - основной сервис, основная БД, сервис статистики просмотров, БД для статистики. Каждый микросервис поднимается в отдельном docker-контейнере.
 
 
-Ссылка на pull - request: https://github.com/VasilisaZautinskaya/java-explore-with-me/pull/8
+Ссылка на pull - request: https://github.com/VasilisaZautinskaya/java-explore-with-me/pull/9/
 
 Основной сервис - https://github.com/VasilisaZautinskaya/java-explore-with-me/blob/main/ewm-main-service-spec.json
 
 Сервис статистики - https://github.com/VasilisaZautinskaya/java-explore-with-me/blob/main/ewm-stats-service-spec.json
 
 Реализованные эндпоинты:
+
+- POST/hit - сохранение информа
 
 
 
